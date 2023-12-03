@@ -36,15 +36,16 @@ class Program
 
     static int GetNumberLength(string line, int startingPosition)
     {
-        int endingPosition = startingPosition + 1;
+        int endingPosition = startingPosition;
 
-        while (endingPosition < line.Length && Char.IsDigit(line[endingPosition]))
+        while (endingPosition < line.Length - 1 && Char.IsDigit(line[endingPosition + 1]))
         {
             endingPosition++;
         }
 
-        return endingPosition - startingPosition;
+        return endingPosition - startingPosition + 1;
     }
+    
     static bool isAdjacentToSymbol(string[] lines, int startingLine, int startingPosition, int length)
     {
         for (int i = startingLine - 1; i <= startingLine + 1; i++)
