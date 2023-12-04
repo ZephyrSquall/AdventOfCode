@@ -1,10 +1,41 @@
-﻿namespace _01_2;
+namespace AdventOfCode2023;
 
-class Program
+class Day01Solver : Solver
 {
-    static void Main(string[] args)
+    private string _puzzleInputPath = "PuzzleInputs/01.txt";
+    public override string PuzzleInputPath { get => _puzzleInputPath; }
+
+    public override int SolvePart1()
     {
-        string[] lines = File.ReadAllLines(args[0]);
+        string[] lines = File.ReadAllLines(PuzzleInputPath);
+
+        int count = 0;
+
+        foreach (string line in lines)
+        {
+            bool foundFirstDigit = false;
+            int firstDigit = -1;
+            int lastDigit = -1;
+
+            foreach (char c in line)
+            {
+                if (Char.IsDigit(c))
+                {
+                    int value = (int)Char.GetNumericValue(c);
+                    UpdateDigits(value, ref foundFirstDigit, ref firstDigit, ref lastDigit);
+                }
+            }
+
+            int calibrationValue = 10 * firstDigit + lastDigit;
+            count += calibrationValue;
+        }
+
+        return count;
+    }
+
+    public override int SolvePart2()
+    {
+        string[] lines = File.ReadAllLines(PuzzleInputPath);
 
         int count = 0;
 
@@ -39,10 +70,11 @@ class Program
             count += calibrationValue;
         }
 
-        Console.WriteLine(count);
+        return count;
     }
 
-    static void UpdateDigits(int value, ref bool foundFirstDigit, ref int firstDigit, ref int lastDigit)
+
+    void UpdateDigits(int value, ref bool foundFirstDigit, ref int firstDigit, ref int lastDigit)
     {
         lastDigit = value;
         if (!foundFirstDigit)
@@ -52,7 +84,7 @@ class Program
         }
     }
 
-    static int? CheckWrittenNumber(char[] characters, int position)
+    int? CheckWrittenNumber(char[] characters, int position)
     {
         int charactersRemaining = characters.Length - position;
 
