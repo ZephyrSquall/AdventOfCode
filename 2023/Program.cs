@@ -9,6 +9,7 @@ class Program
             [1] = new Day01Solver(),
             [2] = new Day02Solver(),
             [3] = new Day03Solver(),
+            [4] = new Day04Solver(),
         };
 
         if (args.Length == 0)
