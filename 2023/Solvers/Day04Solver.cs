@@ -12,27 +12,7 @@ class Day04Solver : Solver
 
         foreach (string line in lines)
         {
-            // Trim everything before colon, as card number is irrelevant. Uses range operator.
-            string trimmedLine = line[(line.IndexOf(':') + 1)..];
-
-            string[] numberGroups = trimmedLine.Split('|');
-
-            int[] winningNumbers = GetNumbersFromString(numberGroups[0]);
-            int[] myNumbers = GetNumbersFromString(numberGroups[1]);
-
-            int matches = 0;
-            foreach (int myNumber in myNumbers)
-            {
-                foreach (int winningNumber in winningNumbers)
-                {
-                    if (myNumber == winningNumber)
-                    {
-                        matches++;
-                        continue;
-                    }
-                }
-            }
-
+            int matches = GetMatches(line);
             int points = GetPoints(matches);
             count += points;
         }
@@ -42,9 +22,54 @@ class Day04Solver : Solver
 
     public override int SolvePart2()
     {
-        return 0;
+        string[] lines = File.ReadAllLines(PuzzleInputPath);
+
+        int numCards = lines.Length;
+        // The number of each scratch card held can be thought of as a multiplier, as the number of additional cards won from a given card is multiplied by this amount.
+        int[] cardMultipliers = new int[numCards];
+        Array.Fill(cardMultipliers, 1);
+
+        for (int i = 0; i < lines.Length; i++)
+        {
+            string line = lines[i];
+            int matches = GetMatches(line);
+
+            int thisCardMultiplier = cardMultipliers[i];
+            for (int j = 0; j < matches; j++)
+            {
+                cardMultipliers[i + j + 1] += thisCardMultiplier;
+            }
+        }
+
+        int cards = cardMultipliers.Sum();
+        return cards;
     }
 
+
+    int GetMatches(string line)
+    {
+        // Trim everything before colon, as card number is irrelevant. Uses range operator.
+        string trimmedLine = line[(line.IndexOf(':') + 1)..];
+
+        string[] numberGroups = trimmedLine.Split('|');
+
+        int[] winningNumbers = GetNumbersFromString(numberGroups[0]);
+        int[] myNumbers = GetNumbersFromString(numberGroups[1]);
+
+        int matches = 0;
+        foreach (int myNumber in myNumbers)
+        {
+            foreach (int winningNumber in winningNumbers)
+            {
+                if (myNumber == winningNumber)
+                {
+                    matches++;
+                    continue;
+                }
+            }
+        }
+        return matches;
+    }
 
     int[] GetNumbersFromString(string input)
     {
