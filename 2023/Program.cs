@@ -10,6 +10,7 @@ class Program
             [2] = new Day02Solver(),
             [3] = new Day03Solver(),
             [4] = new Day04Solver(),
+            [5] = new Day05Solver(),
         };
 
         if (args.Length == 0)
@@ -19,8 +20,8 @@ class Program
         else
         {
             int day = int.Parse(args[0]);
-            int solution1 = solvers[day].SolvePart1();
-            int solution2 = solvers[day].SolvePart2();
+            long solution1 = solvers[day].SolvePart1();
+            long solution2 = solvers[day].SolvePart2();
             Console.WriteLine("Part 1: {0}", solution1);
             Console.WriteLine("Part 2: {0}", solution2);
         }

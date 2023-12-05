@@ -5,7 +5,7 @@ class Day04Solver : Solver
     private string _puzzleInputPath = "PuzzleInputs/04.txt";
     public override string PuzzleInputPath { get => _puzzleInputPath; }
 
-    public override int SolvePart1()
+    public override long SolvePart1()
     {
         string[] lines = File.ReadAllLines(PuzzleInputPath);
         int count = 0;
@@ -20,7 +20,7 @@ class Day04Solver : Solver
         return count;
     }
 
-    public override int SolvePart2()
+    public override long SolvePart2()
     {
         string[] lines = File.ReadAllLines(PuzzleInputPath);
 
