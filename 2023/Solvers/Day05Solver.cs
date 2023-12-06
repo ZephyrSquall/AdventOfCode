@@ -8,49 +8,41 @@ class Day05Solver : Solver
     public override long SolvePart1()
     {
         string puzzleInput = File.ReadAllText(PuzzleInputPath);
+        GetSeedIdsAndMappers(puzzleInput, out long[] seedIds, out List<Mapper> mappers);
 
-        // Strip all alphabetical characters and dashes, which are only found in names.
-        // The names of each mapping aren't important, all that matters is that sets of mappings are separated by colons, specific mappings are separated by newlines, and the numbers in each mapping are separated by spaces.
-        // The seed ids themselves are identified by being the first set of numbers, and also don't need to be named.
-        string strippedPuzzleInput = new string(puzzleInput.Where(c => !(Char.IsLetter(c) || c == '-')).ToArray());
-
-        string[] mappingSetStrings = strippedPuzzleInput.Split(':', StringSplitOptions.RemoveEmptyEntries);
-
-        string seedIdSetString = mappingSetStrings[0];
-        long[] seedIds = GetNumbersFromString(seedIdSetString);
-
-        List<Mapper> mappers = new List<Mapper>();
-
-        for (int i = 1; i < mappingSetStrings.Length; i++)
+        foreach (Mapper mapper in mappers)
         {
-            string mappingSetString = mappingSetStrings[i];
-            Mapper mapper = new Mapper(mappingSetString);
-            mappers.Add(mapper);
+            seedIds = mapper.Map(seedIds);
         }
 
-        List<long> locations = new List<long>();
-
-        foreach (long seedId in seedIds)
-        {
-            long mappedValue = seedId;
-
-            foreach (Mapper mapper in mappers)
-            {
-                mappedValue = mapper.Map(mappedValue);
-            }
-
-            locations.Add(mappedValue);
-        }
-
-        long lowestLocation = locations.Min();
+        long lowestLocation = seedIds.Min();
         return lowestLocation;
     }
 
     public override long SolvePart2()
     {
-        string[] lines = File.ReadAllLines(PuzzleInputPath);
+        string puzzleInput = File.ReadAllText(PuzzleInputPath);
+        GetSeedIdsAndMappers(puzzleInput, out long[] seedIds, out List<Mapper> mappers);
 
-        return 0;
+        List<IdRange> seedIdRanges = new List<IdRange>();
+        for (int i = 0; i < seedIds.Length; i += 2)
+        {
+            IdRange seedIdRange = new IdRange
+            {
+                start = seedIds[i],
+                length = seedIds[i + 1]
+            };
+            seedIdRanges.Add(seedIdRange);
+        }
+
+        foreach (Mapper mapper in mappers)
+        {
+            seedIdRanges = mapper.Map(seedIdRanges);
+        }
+
+        // Gets the minimum starting id of all seedIds, which at this point have been fully mapped to location IDs (the starting id of a range is the smallest id of that range so there's no need to check a range's length).
+        long minimumLocation = seedIdRanges.Aggregate(long.MaxValue, (currentMinimum, seedIdRange) => Math.Min(currentMinimum, seedIdRange.start));
+        return minimumLocation;
     }
 
 
@@ -58,6 +50,7 @@ class Day05Solver : Solver
     {
         private List<Mapping> mappings = new List<Mapping>();
 
+        // Constructor handles the set-up of mappings that are then used when calling its Map method.
         public Mapper(string mappingSetString)
         {
             string[] mappingStrings = mappingSetString.Split('\n', StringSplitOptions.RemoveEmptyEntries);
@@ -94,6 +87,92 @@ class Day05Solver : Solver
 
             return input;
         }
+
+        public long[] Map(long[] inputs)
+        {
+            // Apply Map(long input) overload to each individual element in the array.
+            long[] mappedInputs = inputs.Select(Map).ToArray();
+            return mappedInputs;
+        }
+
+        public List<IdRange> Map(List<IdRange> inputRanges)
+        {
+            List<IdRange> mappedInputs = new List<IdRange>();
+            Stack<IdRange> unmappedInputs = new Stack<IdRange>(inputRanges);
+
+            while (unmappedInputs.Count != 0)
+            {
+                IdRange input = unmappedInputs.Pop();
+                bool inputMapped = false;
+
+                foreach (Mapping mapping in mappings)
+                {
+                    long inputStart = input.start;
+                    long inputEnd = input.start + input.length - 1;
+                    long mappingStart = mapping.source;
+                    long mappingEnd = mapping.source + mapping.length - 1;
+
+                    // If the end of the input is before the start of the mapping source, or the start of the input is after the end of the mapping source, then none of the range overlaps so skip to the next mapping.
+                    if (inputStart > mappingEnd || inputEnd < mappingStart)
+                    {
+                        continue;
+                    }
+
+                    if (inputStart < mappingStart)
+                    {
+                        // Add the range of inputs from before the start of the mapping region back into the stack of unmapped ID ranges.
+                        long newIdRangeStart = inputStart;
+                        long newIdRangeLength = mappingStart - inputStart;
+                        unmappedInputs.Push(new IdRange
+                        {
+                            start = newIdRangeStart,
+                            length = newIdRangeLength,
+                        });
+
+                        // Adjust inputStart so only the section of the input range that falls within the mapping region is mapped.
+                        inputStart = mappingStart;
+                    }
+
+                    if (inputEnd > mappingEnd)
+                    {
+                        // Add the range of inputs from after the end of the mapping region back into the stack of unmapped ID ranges.
+                        long newIdRangeStart = mappingEnd + 1;
+                        long newIdRangeLength = inputEnd - mappingEnd;
+                        unmappedInputs.Push(new IdRange
+                        {
+                            start = newIdRangeStart,
+                            length = newIdRangeLength,
+                        });
+
+                        // Adjust inputEnd so only the section of the input range that falls within the mapping region is mapped.
+                        inputEnd = mappingEnd;
+                    }
+
+                    // Now that the input range has been truncated to lie entirely within the mapping range, perform the mapping on the truncated input range.
+                    long mappedInputLength = inputEnd - inputStart + 1;
+                    long startOffset = inputStart - mappingStart;
+                    long mappedInputStart = mapping.destination + startOffset;
+                    mappedInputs.Add(new IdRange
+                    {
+                        start = mappedInputStart,
+                        length = mappedInputLength,
+                    });
+
+                    // A successful mapping was found, so stop searching for more mappings from the current input.
+                    // The next loop iteration will check the unmappedInputs stack in case there were regions of the current input that were unmapped, and try to map only those regions again.
+                    inputMapped = true;
+                    break;
+                }
+
+                // If inputMapped is still false, this means none of the mappings matched any part of this input range, which means this entire input range maps to itself.
+                if (!inputMapped)
+                {
+                    mappedInputs.Add(input);
+                }
+            }
+
+            return mappedInputs;
+        }
     }
 
     class Mapping
@@ -101,6 +180,34 @@ class Day05Solver : Solver
         public long destination;
         public long source;
         public long length;
+    }
+
+    class IdRange
+    {
+        public long start;
+        public long length;
+    }
+
+    void GetSeedIdsAndMappers(string puzzleInput, out long[] seedIds, out List<Mapper> mappers)
+    {
+        // Strip all alphabetical characters and dashes, which are only found in names.
+        // The names of each mapping aren't important, all that matters is that sets of mappings are separated by colons, specific mappings are separated by newlines, and the numbers in each mapping are separated by spaces.
+        // The seed ids themselves are identified by being the first set of numbers, and also don't need to be named.
+        string strippedPuzzleInput = new string(puzzleInput.Where(c => !(Char.IsLetter(c) || c == '-')).ToArray());
+
+        string[] mappingSetStrings = strippedPuzzleInput.Split(':', StringSplitOptions.RemoveEmptyEntries);
+
+        string seedIdSetString = mappingSetStrings[0];
+        seedIds = GetNumbersFromString(seedIdSetString);
+
+        mappers = new List<Mapper>();
+
+        for (int i = 1; i < mappingSetStrings.Length; i++)
+        {
+            string mappingSetString = mappingSetStrings[i];
+            Mapper mapper = new Mapper(mappingSetString);
+            mappers.Add(mapper);
+        }
     }
 
     static long[] GetNumbersFromString(string input)
