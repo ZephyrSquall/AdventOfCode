@@ -2,8 +2,10 @@ namespace AdventOfCode2023;
 
 class Day02Solver : Solver
 {
+    private string _puzzleTitle = "Cube Conundrum";
     private string _puzzleInputPath = "PuzzleInputs/02.txt";
     public override string PuzzleInputPath { get => _puzzleInputPath; }
+    public override string PuzzleTitle { get => _puzzleTitle; }
 
     public override long SolvePart1()
     {

@@ -2,7 +2,9 @@ namespace AdventOfCode2023;
 
 class Day07Solver : Solver
 {
+    private string _puzzleTitle = "Camel Cards";
     private string _puzzleInputPath = "PuzzleInputs/07.txt";
+    public override string PuzzleTitle { get => _puzzleTitle; }
     public override string PuzzleInputPath { get => _puzzleInputPath; }
 
     public override long SolvePart1()

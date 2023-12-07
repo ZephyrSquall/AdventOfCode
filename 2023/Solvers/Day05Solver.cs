@@ -2,8 +2,10 @@ namespace AdventOfCode2023;
 
 class Day05Solver : Solver
 {
+    private string _puzzleTitle = "If You Give A Seed A Fertilizer";
     private string _puzzleInputPath = "PuzzleInputs/05.txt";
     public override string PuzzleInputPath { get => _puzzleInputPath; }
+    public override string PuzzleTitle { get => _puzzleTitle; }
 
     public override long SolvePart1()
     {

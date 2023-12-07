@@ -2,8 +2,10 @@ namespace AdventOfCode2023;
 
 class Day03Solver : Solver
 {
+    private string _puzzleTitle = "Gear Ratios";
     private string _puzzleInputPath = "PuzzleInputs/03.txt";
     public override string PuzzleInputPath { get => _puzzleInputPath; }
+    public override string PuzzleTitle { get => _puzzleTitle; }
 
     public override long SolvePart1()
     {
@@ -102,7 +104,7 @@ class Day03Solver : Solver
         return false;
     }
 
-        static int GetNumberValue(string line, int linePosition)
+    static int GetNumberValue(string line, int linePosition)
     {
         int startingPosition = linePosition;
         int endingPosition = linePosition;

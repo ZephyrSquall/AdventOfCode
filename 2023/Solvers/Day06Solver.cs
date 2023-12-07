@@ -2,8 +2,10 @@ namespace AdventOfCode2023;
 
 class Day06Solver : Solver
 {
+    private string _puzzleTitle = "Wait For It";
     private string _puzzleInputPath = "PuzzleInputs/06.txt";
     public override string PuzzleInputPath { get => _puzzleInputPath; }
+    public override string PuzzleTitle { get => _puzzleTitle; }
 
     public override long SolvePart1()
     {
