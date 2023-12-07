@@ -8,12 +8,24 @@ class Day07Solver : Solver
     public override long SolvePart1()
     {
         string[] lines = File.ReadAllLines(PuzzleInputPath);
+        return Solve(lines, false);
+    }
+
+    public override long SolvePart2()
+    {
+        string[] lines = File.ReadAllLines(PuzzleInputPath);
+        return Solve(lines, true);
+    }
+
+
+    int Solve(string[] lines, bool usingJokers)
+    {
         List<Hand> hands = new List<Hand>();
         int totalWinnings = 0;
 
         foreach (string line in lines)
         {
-            hands.Add(new Hand(line));
+            hands.Add(new Hand(line, usingJokers));
         }
 
         hands.Sort();
@@ -30,23 +42,18 @@ class Day07Solver : Solver
         return totalWinnings;
     }
 
-    public override long SolvePart2()
-    {
-        string[] lines = File.ReadAllLines(PuzzleInputPath);
-
-        return 0;
-    }
-
-
     // Implementing IComparable interface lets hands list be sorted by calling hands.Sort();
     class Hand : IComparable
     {
         public int[] cardIds;
         public int bid;
         public const int CARDS_IN_HAND = 5;
+        public bool usingJokers;
 
-        public Hand(string handLine)
+        public Hand(string handLine, bool usingJokers)
         {
+            this.usingJokers = usingJokers;
+
             string[] handLineSplit = handLine.Split(' ');
             string cardsLine = handLineSplit[0];
             string bidLine = handLineSplit[1];
@@ -55,7 +62,9 @@ class Day07Solver : Solver
             for (int i = 0; i < CARDS_IN_HAND; i++)
             {
                 char cardLabel = cardsLine[i];
-                cardIds[i] = labelToStrength[cardLabel];
+
+                if (usingJokers) cardIds[i] = labelToStrengthWithJokers[cardLabel];
+                else cardIds[i] = labelToStrength[cardLabel];
             }
 
             bid = int.Parse(bidLine);
@@ -63,45 +72,40 @@ class Day07Solver : Solver
 
         private HandType GetHandType()
         {
-            HandType currentHandType = HandType.HighCard;
-            List<int> foundLabels = new List<int>();
+            Dictionary<int, int> labelCount = new Dictionary<int, int>();
+            int jokerCount = 0;
 
             for (int i = 0; i < CARDS_IN_HAND; i++)
             {
-                int countSameLabel = 1;
-
-                for (int j = i + 1; j < CARDS_IN_HAND; j++)
-                {
-                    if (foundLabels.Contains(cardIds[j]))
-                    {
-                        continue;
-                    }
-
-                    if (cardIds[i] == cardIds[j])
-                    {
-                        countSameLabel++;
-                    }
-                }
-
-                if (countSameLabel == 5 && currentHandType < HandType.FiveOfAKind) currentHandType = HandType.FiveOfAKind;
-                else if (countSameLabel == 4 && currentHandType < HandType.FourOfAKind) currentHandType = HandType.FourOfAKind;
-                else if (countSameLabel == 3)
-                {
-                    if (currentHandType == HandType.OnePair) currentHandType = HandType.FullHouse;
-                    else if (currentHandType < HandType.ThreeOfAKind) currentHandType = HandType.ThreeOfAKind;
-                }
-                else if (countSameLabel == 2)
-                {
-                    if (currentHandType == HandType.ThreeOfAKind) currentHandType = HandType.FullHouse;
-                    else if (currentHandType == HandType.OnePair) currentHandType = HandType.TwoPair;
-                    else if (currentHandType < HandType.OnePair) currentHandType = HandType.OnePair;
-                }
-
-                // Keep track of matched labels to prevent cases like a three-of-a-kind later being identified as a pair when searching for matches from the next card onwards.
-                foundLabels.Add(cardIds[i]);
+                if (usingJokers && cardIds[i] == 0) jokerCount++;
+                else if (labelCount.ContainsKey(cardIds[i])) labelCount[cardIds[i]]++;
+                else labelCount.Add(cardIds[i], 1);
             }
 
-            return currentHandType;
+            int[] matches = labelCount.Values.ToArray();
+            // If the hand has five jokers, matches will be empty, so explicitly give the array an element that it can add the five jokers to.
+            if (matches.Length == 0)
+            {
+                matches = [0];
+            }
+            Array.Sort(matches);
+            Array.Reverse(matches);
+            // The hand value is always increased as much as possible by adding the jokers to the count of whatever label already had the highest count so far.
+            matches[0] += jokerCount;
+
+            if (matches[0] == 5) return HandType.FiveOfAKind;
+            else if (matches[0] == 4) return HandType.FourOfAKind;
+            else if (matches[0] == 3)
+            {
+                if (matches[1] == 2) return HandType.FullHouse;
+                else return HandType.ThreeOfAKind;
+            }
+            else if (matches[0] == 2)
+            {
+                if (matches[1] == 2) return HandType.TwoPair;
+                else return HandType.OnePair;
+            }
+            return HandType.HighCard;
         }
 
         public int CompareTo(object? obj)
@@ -129,7 +133,7 @@ class Day07Solver : Solver
         }
     }
 
-    static Dictionary<char, int> labelToStrength = new Dictionary<char, int>
+    static readonly Dictionary<char, int> labelToStrength = new Dictionary<char, int>
     {
         ['2'] = 0,
         ['3'] = 1,
@@ -141,6 +145,23 @@ class Day07Solver : Solver
         ['9'] = 7,
         ['T'] = 8,
         ['J'] = 9,
+        ['Q'] = 10,
+        ['K'] = 11,
+        ['A'] = 12,
+    };
+
+    static readonly Dictionary<char, int> labelToStrengthWithJokers = new Dictionary<char, int>
+    {
+        ['J'] = 0,
+        ['2'] = 1,
+        ['3'] = 2,
+        ['4'] = 3,
+        ['5'] = 4,
+        ['6'] = 5,
+        ['7'] = 6,
+        ['8'] = 7,
+        ['9'] = 8,
+        ['T'] = 9,
         ['Q'] = 10,
         ['K'] = 11,
         ['A'] = 12,
