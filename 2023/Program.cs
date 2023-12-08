@@ -18,6 +18,7 @@ class Program
         [5] = new Day05Solver(),
         [6] = new Day06Solver(),
         [7] = new Day07Solver(),
+        [8] = new Day08Solver(),
     };
 
     static void Main(string[] args)
