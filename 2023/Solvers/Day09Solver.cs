@@ -9,6 +9,17 @@ class Day09Solver : Solver
 
     public override long SolvePart1()
     {
+        return Solve(false);
+    }
+
+    public override long SolvePart2()
+    {
+        return Solve(true);
+    }
+
+
+    int Solve(bool goBackwards)
+    {
         string[] lines = File.ReadAllLines(PuzzleInputPath);
         int nextValueSum = 0;
 
@@ -16,22 +27,14 @@ class Day09Solver : Solver
         {
             int[] values = GetNumbersFromString(line);
 
-            int nextValue = GetNextValue(values);
+            int nextValue = GetNextValue(values, goBackwards);
             nextValueSum += nextValue;
         }
 
         return nextValueSum;
     }
 
-    public override long SolvePart2()
-    {
-        string[] lines = File.ReadAllLines(PuzzleInputPath);
-
-        return 0;
-    }
-
-
-    int GetNextValue(int[] values)
+    int GetNextValue(int[] values, bool goBackwards)
     {
         // Get new array with the differences between the values.
         int[] diffs = new int[values.Length - 1];
@@ -40,14 +43,21 @@ class Day09Solver : Solver
         // If any value in the diffs array is not zero, recursively call this function to get the innerNextValue (the value appended to the diffs array).
         // Otherwise (meaning diffs array is all zeroes), innerNextValue is 0.
         int innerNextValue = 0;
-        if (diffs.Any(diff => diff != 0)) innerNextValue = GetNextValue(diffs);
+        if (diffs.Any(diff => diff != 0)) innerNextValue = GetNextValue(diffs, goBackwards);
 
-        // innerNextValue is be the difference between the last value and nextValue, i.e.
-        //   innerNextValue = nextValue - values[^1]
+        // If going forwards:
+        //   innerNextValue is be the difference between the last value and nextValue, i.e.
+        //     innerNextValue = nextValue - values[^1]
+        //   therefore:
+        //     nextValue = innerNextValue + values[^1]
         //
-        // therefore:
-        //   nextValue = innerNextValue + values[^1]
-        return innerNextValue + values[^1];
+        // If going backwards:
+        //   innerNextValue is be the difference between nextValue and the first value, i.e.
+        //     innerNextValue = values[0] - nextValue
+        //   therefore:
+        //     nextValue = values[0] - innerNextValue
+        if (goBackwards) return values[0] - innerNextValue;
+        else return innerNextValue + values[^1];
     }
 
     int[] GetNumbersFromString(string input)
