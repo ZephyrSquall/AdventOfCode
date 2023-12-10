@@ -23,6 +23,7 @@ class Day10Solver : Solver
         ['J'] = [Direction.North, Direction.West],
         ['7'] = [Direction.South, Direction.West],
         ['F'] = [Direction.East, Direction.South],
+        ['.'] = [],
     };
 
     public override long SolvePart1()
@@ -33,12 +34,12 @@ class Day10Solver : Solver
         int sx;
         (sy, sx) = FindS(grid);
 
-        PipeDirection pipeDirection1 = FindStartingPipe(grid, sy, sx);
+        PipeDirection pipeDirection = FindStartingPipe(grid, sy, sx);
 
         int steps = 0;
-        while (grid[pipeDirection1.y][pipeDirection1.x] != 'S')
+        while (grid[pipeDirection.y][pipeDirection.x] != 'S')
         {
-            pipeDirection1 = GetNextPipe(grid, pipeDirection1);
+            pipeDirection = GetNextPipe(grid, pipeDirection);
             steps++;
         }
 
@@ -50,8 +51,122 @@ class Day10Solver : Solver
 
     public override long SolvePart2()
     {
-        string[] lines = File.ReadAllLines(PuzzleInputPath);
-        return 0;
+        string[] grid = File.ReadAllLines(PuzzleInputPath);
+
+        int sy;
+        int sx;
+        (sy, sx) = FindS(grid);
+
+        PipeDirection pipeDirection = FindStartingPipe(grid, sy, sx);
+
+        int clockwiseTurns = 0;
+        HashSet<PipeDirection> loopPipes = new HashSet<PipeDirection>([pipeDirection]);
+
+        while (grid[pipeDirection.y][pipeDirection.x] != 'S')
+        {
+            Direction enteringDirection = pipeDirection.previousDirection;
+            pipeDirection = GetNextPipe(grid, pipeDirection);
+            loopPipes.Add(pipeDirection);
+            Direction leavingDirection = pipeDirection.previousDirection;
+
+            clockwiseTurns += TurnDirection(enteringDirection, leavingDirection);
+        }
+
+        bool clockwiseLoop = clockwiseTurns > 0;
+        HashSet<(int y, int x)> possibleInsideLoopCoordinates = new HashSet<(int y, int x)>();
+        HashSet<(int y, int x)> insideLoopCoordinates = new HashSet<(int y, int x)>();
+
+        // Find initial points of inside loop co-ordinates by getting points adjacent to the loop.
+        foreach (PipeDirection loopPipe in loopPipes)
+        {
+            char pipe = grid[loopPipe.y][loopPipe.x];
+            {
+                if (clockwiseLoop)
+                {
+                    if (pipe == '|')
+                    {
+                        if (loopPipe.previousDirection == Direction.North) possibleInsideLoopCoordinates.Add((loopPipe.y, loopPipe.x + 1));
+                        if (loopPipe.previousDirection == Direction.South) possibleInsideLoopCoordinates.Add((loopPipe.y, loopPipe.x - 1));
+                    }
+                    else if (pipe == '-')
+                    {
+                        if (loopPipe.previousDirection == Direction.East) possibleInsideLoopCoordinates.Add((loopPipe.y + 1, loopPipe.x));
+                        if (loopPipe.previousDirection == Direction.West) possibleInsideLoopCoordinates.Add((loopPipe.y - 1, loopPipe.x));
+                    }
+                    else if (pipe == 'L' && loopPipe.previousDirection == Direction.South)
+                    {
+                        possibleInsideLoopCoordinates.Add((loopPipe.y+1, loopPipe.x));
+                        possibleInsideLoopCoordinates.Add((loopPipe.y, loopPipe.x-1));
+                    }
+                    else if (pipe == 'J' && loopPipe.previousDirection == Direction.East)
+                    {
+                        possibleInsideLoopCoordinates.Add((loopPipe.y, loopPipe.x+1));
+                        possibleInsideLoopCoordinates.Add((loopPipe.y+1, loopPipe.x));
+                    }
+                    else if (pipe == '7' && loopPipe.previousDirection == Direction.North)
+                    {
+                        possibleInsideLoopCoordinates.Add((loopPipe.y-1, loopPipe.x));
+                        possibleInsideLoopCoordinates.Add((loopPipe.y, loopPipe.x+1));
+                    }
+                    else if (pipe == 'F' && loopPipe.previousDirection == Direction.West)
+                    {
+                        possibleInsideLoopCoordinates.Add((loopPipe.y-1, loopPipe.x));
+                        possibleInsideLoopCoordinates.Add((loopPipe.y, loopPipe.x-1));
+                    }
+                }
+                // if !clockwiseLoop
+                else
+                {
+                    if (pipe == '|')
+                    {
+                        if (loopPipe.previousDirection == Direction.North) possibleInsideLoopCoordinates.Add((loopPipe.y, loopPipe.x - 1));
+                        if (loopPipe.previousDirection == Direction.South) possibleInsideLoopCoordinates.Add((loopPipe.y, loopPipe.x + 1));
+                    }
+                    else if (pipe == '-')
+                    {
+                        if (loopPipe.previousDirection == Direction.East) possibleInsideLoopCoordinates.Add((loopPipe.y - 1, loopPipe.x));
+                        if (loopPipe.previousDirection == Direction.West) possibleInsideLoopCoordinates.Add((loopPipe.y + 1, loopPipe.x));
+                    }
+                    else if (pipe == 'L' && loopPipe.previousDirection == Direction.West)
+                    {
+                        possibleInsideLoopCoordinates.Add((loopPipe.y+1, loopPipe.x));
+                        possibleInsideLoopCoordinates.Add((loopPipe.y, loopPipe.x-1));
+                    }
+                    else if (pipe == 'J' && loopPipe.previousDirection == Direction.South)
+                    {
+                        possibleInsideLoopCoordinates.Add((loopPipe.y, loopPipe.x+1));
+                        possibleInsideLoopCoordinates.Add((loopPipe.y+1, loopPipe.x));
+                    }
+                    else if (pipe == '7' && loopPipe.previousDirection == Direction.East)
+                    {
+                        possibleInsideLoopCoordinates.Add((loopPipe.y-1, loopPipe.x));
+                        possibleInsideLoopCoordinates.Add((loopPipe.y, loopPipe.x+1));
+                    }
+                    else if (pipe == 'F' && loopPipe.previousDirection == Direction.North)
+                    {
+                        possibleInsideLoopCoordinates.Add((loopPipe.y-1, loopPipe.x));
+                        possibleInsideLoopCoordinates.Add((loopPipe.y, loopPipe.x-1));
+                    }
+                }
+
+            }
+        }
+
+        insideLoopCoordinates = PrunePossibleInsideLoopCoordinates(loopPipes, possibleInsideLoopCoordinates, insideLoopCoordinates);
+
+        // Search for the rest of the area inside the loop by spreading out from the initial points until no more area is gained.
+        int previousInsideArea = insideLoopCoordinates.Count();
+        int nextInsideArea = 0;
+        while (previousInsideArea != nextInsideArea)
+        {
+            previousInsideArea = insideLoopCoordinates.Count();
+            possibleInsideLoopCoordinates = GetNewPossibleInsideLoopCoordinates(insideLoopCoordinates);
+            possibleInsideLoopCoordinates = PrunePossibleInsideLoopCoordinates(loopPipes, possibleInsideLoopCoordinates, insideLoopCoordinates);
+            insideLoopCoordinates.UnionWith(possibleInsideLoopCoordinates);
+            nextInsideArea = insideLoopCoordinates.Count();
+        }
+
+        return nextInsideArea;
     }
 
 
@@ -167,6 +282,67 @@ class Day10Solver : Solver
             x = xNext,
             previousDirection = nextDirection,
         };
+    }
+
+    // -1: Counterclockwise turn
+    // 0: No turn (went straight)
+    // 1: Clockwise turn
+    int TurnDirection(Direction enteringDirection, Direction leavingDirection)
+    {
+        // enteringDirection is the direction you're travelling as you enter (so if it's south, means you're coming from the north).
+        // leavingDirection is the direction you're travelling as you leave (so if it's east, means you're going to the east).
+        if (enteringDirection == Direction.North)
+        {
+            if (leavingDirection == Direction.West) return -1;
+            if (leavingDirection == Direction.East) return 1;
+        }
+        if (enteringDirection == Direction.East)
+        {
+            if (leavingDirection == Direction.North) return -1;
+            if (leavingDirection == Direction.South) return 1;
+        }
+        if (enteringDirection == Direction.South)
+        {
+            if (leavingDirection == Direction.East) return -1;
+            if (leavingDirection == Direction.West) return 1;
+        }
+        if (enteringDirection == Direction.West)
+        {
+            if (leavingDirection == Direction.South) return -1;
+            if (leavingDirection == Direction.North) return 1;
+        }
+        return 0;
+    }
+
+    HashSet<(int y, int x)> PrunePossibleInsideLoopCoordinates(HashSet<PipeDirection> loopPipes, HashSet<(int y, int x)> possibleInsideLoopCoordinates, HashSet<(int y, int x)> insideLoopCoordinates)
+    {
+        HashSet<(int y, int x)> insideLoopCoordinatesToRemove = new HashSet<(int y, int x)>();
+
+        foreach ((int y, int x) in possibleInsideLoopCoordinates)
+        {
+            if (loopPipes.Any(loopPipe => (loopPipe.y, loopPipe.x) == (y, x)) || insideLoopCoordinates.Contains((y, x)))
+            {
+                insideLoopCoordinatesToRemove.Add((y, x));
+            }
+        }
+
+        possibleInsideLoopCoordinates.ExceptWith(insideLoopCoordinatesToRemove);
+        return possibleInsideLoopCoordinates;
+    }
+
+    HashSet<(int y, int x)> GetNewPossibleInsideLoopCoordinates(HashSet<(int y, int x)> insideLoopCoordinates)
+    {
+        HashSet<(int y, int x)> possibleInsideLoopCoordinates = new HashSet<(int y, int x)>();
+
+        foreach ((int y, int x) in insideLoopCoordinates)
+        {
+            possibleInsideLoopCoordinates.Add((y - 1, x));
+            possibleInsideLoopCoordinates.Add((y, x + 1));
+            possibleInsideLoopCoordinates.Add((y + 1, x));
+            possibleInsideLoopCoordinates.Add((y, x - 1));
+        }
+
+        return possibleInsideLoopCoordinates;
     }
 
     class PipeDirection
