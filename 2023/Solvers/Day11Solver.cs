@@ -9,13 +9,25 @@ class Day11Solver : Solver
 
     public override long SolvePart1()
     {
+        return Solve(2);
+    }
+
+    public override long SolvePart2()
+    {
+        return Solve(1000000);
+    }
+
+
+    long Solve(int expansionMultiplier)
+    {
         string[] space = File.ReadAllLines(PuzzleInputPath);
 
-        space = ExpandSpace(space);
+        int[] emptyRows = getEmptyRows(space);
+        int[] emptyColumns = getEmptyColumns(space);
 
-        (int y, int x)[] galaxyCoordinates = GetGalaxyCoordinates(space);
+        (int y, int x)[] galaxyCoordinates = GetGalaxyCoordinates(space, emptyRows, emptyColumns, expansionMultiplier);
 
-        int shortestPathSum = 0;
+        long shortestPathSum = 0;
         // By ensuring j is always greater than i, every pair of galaxies is checked only once.
         for (int i = 0; i < galaxyCoordinates.Length; i++)
         {
@@ -28,68 +40,70 @@ class Day11Solver : Solver
         return shortestPathSum;
     }
 
-    public override long SolvePart2()
+    int[] getEmptyRows(string[] space)
     {
-        string[] space = File.ReadAllLines(PuzzleInputPath);
-        return 0;
-    }
-
-
-    string[] ExpandSpace(string[] space)
-    {
-        List<int> rowsToExpand = new List<int>();
-        List<int> columnsToExpand = new List<int>();
-
+        List<int> emptyRows = new List<int>();
         for (int y = 0; y < space.Length; y++)
         {
             // Check for empty rows by seeing if every character in the row is '.'
-            if (space[y].All(point => point == '.')) rowsToExpand.Add(y);
+            if (space[y].All(point => point == '.')) emptyRows.Add(y);
         }
+
+        return emptyRows.ToArray();
+    }
+
+    int[] getEmptyColumns(string[] space)
+    {
+        List<int> emptyColumns = new List<int>();
 
         for (int x = 0; x < space[0].Length; x++)
         {
             // Check for empty columns by checking if any row has a '#' in position x and rejecting the column if it does.
-            bool emptyColumn = true;
+            bool isColumnEmpty = true;
             for (int y = 0; y < space.Length; y++)
             {
                 if (space[y][x] == '#')
                 {
-                    emptyColumn = false;
+                    isColumnEmpty = false;
                     break;
                 }
             }
 
-            if (emptyColumn) columnsToExpand.Add(x);
+            if (isColumnEmpty) emptyColumns.Add(x);
         }
 
-        // Expand space by iterating the list in reverse order (i.e. starting with the last row/column), since adding an extra row/column changes the index of all following rows/columns.
-        List<string> spaceList = new List<string>(space);
-        string emptyRow = new string('.', space[0].Length);
-
-        for (int i = rowsToExpand.Count - 1; i >= 0; i--)
-        {
-            spaceList.Insert(rowsToExpand[i], emptyRow);
-        }
-
-        for (int i = columnsToExpand.Count - 1; i >= 0; i--)
-        {
-            for (int y = 0; y < spaceList.Count; y++)
-            {
-                spaceList[y] = spaceList[y].Insert(columnsToExpand[i], ".");
-            }
-        }
-
-        return spaceList.ToArray();
+        return emptyColumns.ToArray();
     }
 
-    (int y, int x)[] GetGalaxyCoordinates(string[] space)
+    (int y, int x)[] GetGalaxyCoordinates(string[] space, int[] emptyRows, int[] emptyColumns, int expansionMultiplier)
     {
         HashSet<(int y, int x)> galaxyCoordinates = new HashSet<(int y, int x)>();
+
+        int expandedY = 0;
+
         for (int y = 0; y < space.Length; y++)
         {
+            // If y is an empty row, increment expandedY by the size of how many empty rows that a single empty row has expanded to. Otherwise increment by 1 because rows with galaxies have no expansion.
+            if (emptyRows.Contains(y))
+            {
+                expandedY += expansionMultiplier;
+                continue;
+            }
+            expandedY++;
+
+            int expandedX = 0;
+
             for (int x = 0; x < space[y].Length; x++)
             {
-                if (space[y][x] == '#') galaxyCoordinates.Add((y, x));
+                // Likewise, increment expandX by how many empty columns that a single empty column expands to if the column is empty, otherwise increment by 1.
+                if (emptyColumns.Contains(x))
+                {
+                    expandedX += expansionMultiplier;
+                    continue;
+                }
+                expandedX++;
+
+                if (space[y][x] == '#') galaxyCoordinates.Add((expandedY, expandedX));
             }
         }
 
