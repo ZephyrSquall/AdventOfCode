@@ -1,6 +1,7 @@
 #include <iostream>
 #include <functional>
 #include <algorithm>
+#include <chrono>
 #include <iomanip>
 #include "Solvers/Day01Solver.h"
 #include "Solvers/Day02Solver.h"
@@ -26,14 +27,16 @@ struct DayResult
     string title;
     string solution1;
     string solution2;
+    string time1;
+    string time2;
 };
 
 int main()
 {
     const int NUM_SOLVERS = 2;
 
-    Day01Solver day01Solver;
-    Day02Solver day02Solver;
+    Day01Solver day01Solver("Not Quite Lisp");
+    Day02Solver day02Solver("I Was Told There Would Be No Math");
 
     Solver *solvers[NUM_SOLVERS] = {&day01Solver, &day02Solver};
 
@@ -53,22 +56,40 @@ int main()
 
     for (int i = 0; i < NUM_SOLVERS; i++)
     {
-        dayResults[i].title = "test title";
+        auto solution1Start = chrono::high_resolution_clock::now();
+        int solution1 = solvers[i]->SolvePart1();
+        auto solution1End = chrono::high_resolution_clock::now();
+        chrono::duration<double, std::milli> time1 = solution1End - solution1Start;
+
+        auto solution2Start = chrono::high_resolution_clock::now();
+        int solution2 = solvers[i]->SolvePart2();
+        auto solution2End = chrono::high_resolution_clock::now();
+        chrono::duration<double, std::milli> time2 = solution2End - solution2Start;
+
+        dayResults[i].title = solvers[i]->puzzleTitle;
         int titleSize = dayResults[i].title.size();
         if (titleSize > maxPuzzleLength)
             maxPuzzleLength = titleSize;
 
-        int solution1 = solvers[i]->SolvePart1();
         dayResults[i].solution1 = to_string(solution1);
         int solution1Size = dayResults[i].solution1.size();
         if (solution1Size > maxSolutionLength)
             maxSolutionLength = solution1Size;
 
-        int solution2 = solvers[i]->SolvePart2();
         dayResults[i].solution2 = to_string(solution2);
         int solution2Size = dayResults[i].solution2.size();
         if (solution2Size > maxSolutionLength)
             maxSolutionLength = solution2Size;
+
+        dayResults[i].time1 = to_string(time1.count());
+        int time1Size = dayResults[i].time1.size();
+        if (time1Size > maxTimingLength)
+            maxTimingLength = time1Size;
+
+        dayResults[i].time2 = to_string(time2.count());
+        int time2Size = dayResults[i].time2.size();
+        if (time2Size > maxTimingLength)
+            maxTimingLength = time2Size;
     }
 
     // Print the table using all the results calculated thus far.
@@ -93,12 +114,12 @@ int main()
                  << " ║" << endl;
         }
         cout << "║ " << setw(maxDayLength) << i + 1 << " │ " << setw(maxPuzzleLength) << dayResults[i].title << " │ " << setw(maxPartLength) << "1"
-             << " │ " << setw(maxSolutionLength) << dayResults[i].solution1 << " │ " << setw(maxTimingLength) << "test time"
+             << " │ " << setw(maxSolutionLength) << dayResults[i].solution1 << " │ " << setw(maxTimingLength) << dayResults[i].time1
              << " ║" << endl;
         cout << "║ " << setw(maxDayLength) << ""
              << " │ " << setw(maxPuzzleLength) << ""
              << " │ " << setw(maxPartLength) << "2"
-             << " │ " << setw(maxSolutionLength) << dayResults[i].solution2 << " │ " << setw(maxTimingLength) << "test time"
+             << " │ " << setw(maxSolutionLength) << dayResults[i].solution2 << " │ " << setw(maxTimingLength) << dayResults[i].time2
              << " ║" << endl;
     }
 
