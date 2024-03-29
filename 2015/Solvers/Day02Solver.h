@@ -1,8 +1,9 @@
 #include <string>
+#include "../Solver.h"
 
 namespace AdventOfCode2015
 {
-    class Day02Solver
+    class Day02Solver : public Solver
     {
     public:
         int SolvePart1();
