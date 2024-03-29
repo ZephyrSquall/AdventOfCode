@@ -4,6 +4,7 @@
 #include <iomanip>
 #include "Solvers/Day01Solver.h"
 #include "Solvers/Day02Solver.h"
+#include "Solvers/Day03Solver.h"
 #include "Solver.h"
 
 // "═" (the box-drawing character, not an equal sign) is stored as two characters in a char array,
@@ -28,12 +29,17 @@ struct DayResult
 
 int main()
 {
-    const int NUM_SOLVERS = 2;
+    const int NUM_SOLVERS = 3;
 
     AdventOfCode2015::Day01Solver day01Solver("Not Quite Lisp");
     AdventOfCode2015::Day02Solver day02Solver("I Was Told There Would Be No Math");
+    AdventOfCode2015::Day03Solver day03Solver("Perfectly Spherical Houses in a Vacuum");
 
-    AdventOfCode2015::Solver *solvers[NUM_SOLVERS] = {&day01Solver, &day02Solver};
+    AdventOfCode2015::Solver *solvers[NUM_SOLVERS] = {
+        &day01Solver,
+        &day02Solver,
+        &day03Solver,
+        };
 
     const std::string DAY_TITLE = "Day";
     const std::string PUZZLE_TITLE = "Puzzle";
