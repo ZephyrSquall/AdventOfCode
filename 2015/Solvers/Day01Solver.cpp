@@ -2,14 +2,11 @@
 #include <string>
 #include "Day01Solver.h"
 
-using namespace std;
-using namespace AdventOfCode2015;
-
-int Day01Solver::SolvePart1()
+int AdventOfCode2015::Day01Solver::SolvePart1()
 {
-    ifstream puzzleInput("PuzzleInputs/01.txt");
-    string line;
-    getline(puzzleInput, line);
+    std::ifstream puzzleInput("PuzzleInputs/01.txt");
+    std::string line;
+    std::getline(puzzleInput, line);
 
     int floor = 0;
 
@@ -24,11 +21,11 @@ int Day01Solver::SolvePart1()
     return floor;
 }
 
-int Day01Solver::SolvePart2()
+int AdventOfCode2015::Day01Solver::SolvePart2()
 {
-    ifstream puzzleInput("PuzzleInputs/01.txt");
-    string line;
-    getline(puzzleInput, line);
+    std::ifstream puzzleInput("PuzzleInputs/01.txt");
+    std::string line;
+    std::getline(puzzleInput, line);
 
     int floor = 0;
     int firstBasementPosition = 0;
