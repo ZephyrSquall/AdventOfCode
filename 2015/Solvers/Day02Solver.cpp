@@ -38,5 +38,29 @@ int Day02Solver::SolvePart1()
 
 int Day02Solver::SolvePart2()
 {
-    return 0;
+    ifstream infile("PuzzleInputs/02.txt");
+    string line;
+    int totalLength = 0;
+
+    while (getline(infile, line))
+    {
+        istringstream lineStream(line);
+        string dimensionString;
+        int dimensions[3];
+
+        for (int i = 0; i < 3; i++)
+        {
+            getline(lineStream, dimensionString, 'x');
+            dimensions[i] = stoi(dimensionString);
+        }
+
+        int sidePerimeters[3] = {2 * (dimensions[0] + dimensions[1]), 2 * (dimensions[0] + dimensions[2]), 2 * (dimensions[1] + dimensions[2])};
+        int ribbonWrapLength = *min_element(sidePerimeters, sidePerimeters + 3);
+        int ribbonBowLength = dimensions[0] * dimensions[1] * dimensions[2];
+        int ribbonLength = ribbonWrapLength + ribbonBowLength;
+
+        totalLength += ribbonLength;
+    }
+
+    return totalLength;
 }
