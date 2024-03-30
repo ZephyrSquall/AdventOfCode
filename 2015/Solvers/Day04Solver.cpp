@@ -13,7 +13,7 @@ static std::string md5(std::string str)
 {
     std::string input = str;
     std::string input_ascii = "";
-    
+
     // Convert each character into its 8-bit ASCII code then convert it into a binary string.
     for (int i = 0; i < input.size(); i++)
     {
@@ -137,7 +137,7 @@ int AdventOfCode2015::Day04Solver::SolvePart1()
     int i = 0;
     std::string hash = md5(line + std::to_string(i));
 
-    while(hash.substr(0, 5) != "00000")
+    while (hash.substr(0, 5) != "00000")
     {
         i++;
         std::string input = line + std::to_string(i);
@@ -149,5 +149,19 @@ int AdventOfCode2015::Day04Solver::SolvePart1()
 
 int AdventOfCode2015::Day04Solver::SolvePart2()
 {
-    return 0;
+    std::ifstream infile("PuzzleInputs/04.txt");
+    std::string line;
+    std::getline(infile, line);
+
+    int i = 0;
+    std::string hash = md5(line + std::to_string(i));
+
+    while (hash.substr(0, 6) != "000000")
+    {
+        i++;
+        std::string input = line + std::to_string(i);
+        hash = md5(input);
+    }
+
+    return i;
 }
