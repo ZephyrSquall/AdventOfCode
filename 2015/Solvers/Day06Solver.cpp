@@ -124,7 +124,6 @@ int AdventOfCode2015::Day06Solver::SolvePart1()
 
 int AdventOfCode2015::Day06Solver::SolvePart2()
 {
-    std::cout << "test" << std::endl;
     std::ifstream infile("PuzzleInputs/06.txt");
     std::string line;
 
