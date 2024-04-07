@@ -7,6 +7,7 @@ namespace AdventOfCode2015
     {
     public:
         Day07Solver(std::string str) : Solver(str){};
+        int part_1_answer;
         int SolvePart1();
         int SolvePart2();
     };
