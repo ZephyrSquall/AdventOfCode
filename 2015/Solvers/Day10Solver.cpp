@@ -3,13 +3,9 @@
 #include <string>
 #include "Day10Solver.h"
 
-int AdventOfCode2015::Day10Solver::SolvePart1()
+std::string look_and_see(std::string line, int repetitions)
 {
-    std::ifstream infile("PuzzleInputs/10.txt");
-    std::string line;
-    std::getline(infile, line);
-
-    for (int i = 0; i < 40; i++)
+    for (int i = 0; i < repetitions; i++)
     {
         std::string new_line = "";
         char current_char;
@@ -46,10 +42,27 @@ int AdventOfCode2015::Day10Solver::SolvePart1()
         line = new_line;
     }
 
+    return line;
+}
+
+int AdventOfCode2015::Day10Solver::SolvePart1()
+{
+    std::ifstream infile("PuzzleInputs/10.txt");
+    std::string line;
+    std::getline(infile, line);
+
+    line = look_and_see(line, 40);
+
     return line.size();
 }
 
 int AdventOfCode2015::Day10Solver::SolvePart2()
 {
-    return 0;
+    std::ifstream infile("PuzzleInputs/10.txt");
+    std::string line;
+    std::getline(infile, line);
+
+    line = look_and_see(line, 50);
+
+    return line.size();
 }
