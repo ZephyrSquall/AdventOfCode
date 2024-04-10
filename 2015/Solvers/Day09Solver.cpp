@@ -166,5 +166,101 @@ int AdventOfCode2015::Day09Solver::SolvePart1()
 
 int AdventOfCode2015::Day09Solver::SolvePart2()
 {
-    return 0;
+    std::ifstream infile("PuzzleInputs/09.txt");
+    std::string line;
+
+    std::vector<std::string> nodes = {};
+    std::vector<Edge> edges = {};
+
+    while (getline(infile, line))
+    {
+        Edge edge = get_edge(line);
+
+        if (std::count(nodes.begin(), nodes.end(), edge.source_node) == 0)
+        {
+            nodes.push_back(edge.source_node);
+        }
+        if (std::count(nodes.begin(), nodes.end(), edge.target_node) == 0)
+        {
+            nodes.push_back(edge.target_node);
+        }
+
+        edges.push_back(edge);
+    }
+
+    int maximum_distance = INT_MIN;
+    int max_depth = nodes.size();
+    std::vector<std::string> explored_nodes = {};
+
+    // Perform a depth-first search to explore every path. The following lambda function will be
+    // executed recursively to explore all possible paths between nodes.
+    std::function<void(std::vector<std::string>, int)> find_next_node = [edges, &maximum_distance, max_depth, &find_next_node](std::vector<std::string> explored_nodes, int current_distance)
+    {
+        // If explored_nodes has every node, then a full path has been found. Check if it's the
+        // longest path found so far, and update maximum_distance if it is.
+        if (explored_nodes.size() == max_depth)
+        {
+            if (current_distance > maximum_distance)
+            {
+                maximum_distance = current_distance;
+            }
+            return;
+        }
+
+        std::string current_node = explored_nodes.back();
+
+        // Check each edge to see if it has potential to go to the next step of a new longest path.
+        for (Edge edge : edges)
+        {
+            std::string next_node;
+            int next_distance;
+
+            if (edge.source_node == current_node)
+            {
+                next_node = edge.target_node;
+            }
+            else if (edge.target_node == current_node)
+            {
+                next_node = edge.source_node;
+            }
+            else
+            {
+                // The edge does not links to the current node, so skip to the next edge.
+                continue;
+            }
+
+            if (std::count(explored_nodes.begin(), explored_nodes.end(), next_node) != 0)
+            {
+                // The edge goes to a node that has already been visited, so skip to the next edge.
+                continue;
+            }
+
+            // This edge has the potential to be the next longest path, so update the explored
+            // nodes and repeat this search from the next node.
+            std::vector<std::string> next_explored_nodes = explored_nodes;
+            next_explored_nodes.push_back(next_node);
+            next_distance = current_distance + edge.weight;
+            find_next_node(next_explored_nodes, next_distance);
+        }
+    };
+
+    // Start calling the recursive find_next_node once for each possible starting node (with a path
+    // that consists only of the starting node).
+    for (std::string node : nodes)
+    {
+        // Do not search for paths from the final location, as every path leading into the location
+        // has already been explored. Any path found by exploring from the final location will just
+        // be the reverse of an already-found path.
+        if (node == nodes.back())
+        {
+            break;
+        }
+
+        explored_nodes = {node};
+        int current_distance = 0;
+
+        find_next_node(explored_nodes, current_distance);
+    }
+
+    return maximum_distance;
 }
