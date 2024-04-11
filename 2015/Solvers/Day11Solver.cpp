@@ -23,12 +23,8 @@ void increment_string(std::string &str)
     }
 }
 
-std::string AdventOfCode2015::Day11Solver::SolvePart1()
+std::string get_next_valid_password(std::string line)
 {
-    std::ifstream infile("PuzzleInputs/11.txt");
-    std::string line;
-    std::getline(infile, line);
-
     bool contains_straight = false;
     bool lacks_iol = false;
     bool contains_two_pairs = false;
@@ -55,7 +51,7 @@ std::string AdventOfCode2015::Day11Solver::SolvePart1()
                 contains_straight = true;
             }
 
-            if (i >= 1 && line[i] == line [i - 1] && !(i >= 2 && line [i - 1] == line[i-2]))
+            if (i >= 1 && line[i] == line[i - 1] && !(i >= 2 && line[i - 1] == line[i - 2]))
             {
                 pairs++;
             }
@@ -70,7 +66,25 @@ std::string AdventOfCode2015::Day11Solver::SolvePart1()
     return line;
 }
 
+std::string AdventOfCode2015::Day11Solver::SolvePart1()
+{
+    std::ifstream infile("PuzzleInputs/11.txt");
+    std::string line;
+    std::getline(infile, line);
+
+    std::string password = get_next_valid_password(line);
+
+    // Store the answer for part 1 because part 2 requires it.
+    AdventOfCode2015::Day11Solver::part_1_answer = password;
+
+    return password;
+}
+
 std::string AdventOfCode2015::Day11Solver::SolvePart2()
 {
-    return "0";
+    std::string line = AdventOfCode2015::Day11Solver::part_1_answer;
+
+    std::string password = get_next_valid_password(line);
+
+    return password;
 }
