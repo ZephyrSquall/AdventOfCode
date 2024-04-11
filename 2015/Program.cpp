@@ -3,6 +3,7 @@
 #include <chrono>
 #include <iomanip>
 #include <vector>
+#include <cctype>
 #include "Solvers/Day01Solver.h"
 #include "Solvers/Day02Solver.h"
 #include "Solvers/Day03Solver.h"
@@ -43,6 +44,8 @@ struct DayResult
     std::string title;
     std::string solution1;
     std::string solution2;
+    bool solution1_is_number;
+    bool solution2_is_number;
     std::string time1;
     std::string time2;
 };
@@ -73,10 +76,14 @@ DayResult getResults(int day, MaxLengths &maxLengths, AdventOfCode2015::Solver *
     if (solution1Size > maxLengths.maxSolutionLength)
         maxLengths.maxSolutionLength = solution1Size;
 
+    dayResult.solution1_is_number = std::all_of(solution1.begin(), solution1.end(), isdigit);
+
     dayResult.solution2 = solution2;
     int solution2Size = dayResult.solution2.size();
     if (solution2Size > maxLengths.maxSolutionLength)
         maxLengths.maxSolutionLength = solution2Size;
+
+    dayResult.solution2_is_number = std::all_of(solution1.begin(), solution1.end(), isdigit);
 
     dayResult.time1 = std::to_string(time1.count());
     int time1Size = dayResult.time1.size();
@@ -159,7 +166,7 @@ int main(int argc, char *argv[])
 
     // Print the table using all the results calculated thus far.
     std::cout << "╔═" << repeatCharacter(maxLengths.maxDayLength, "═") << "═╤═" << repeatCharacter(maxLengths.maxPuzzleLength, "═") << "═╤═" << repeatCharacter(maxLengths.maxPartLength, "═") << "═╤═" << repeatCharacter(maxLengths.maxSolutionLength, "═") << "═╤═" << repeatCharacter(maxLengths.maxTimingLength, "═") << "═╗" << std::endl;
-    std::cout << "║ " << std::setw(maxLengths.maxDayLength) << DAY_TITLE << " │ " << std::setw(maxLengths.maxPuzzleLength) << PUZZLE_TITLE << " │ " << std::setw(maxLengths.maxPartLength) << PART_TITLE << " │ " << std::setw(maxLengths.maxSolutionLength) << SOLUTION_TITLE << " │ " << std::setw(maxLengths.maxTimingLength) << TIMING_TITLE << " ║" << std::endl;
+    std::cout << "║ " << std::left << std::setw(maxLengths.maxDayLength) << DAY_TITLE << " │ " << std::setw(maxLengths.maxPuzzleLength) << PUZZLE_TITLE << " │ " << std::setw(maxLengths.maxPartLength) << PART_TITLE << " │ " << std::setw(maxLengths.maxSolutionLength) << SOLUTION_TITLE << " │ " << std::setw(maxLengths.maxTimingLength) << TIMING_TITLE << " ║" << std::endl;
     std::cout << "╟─" << repeatCharacter(maxLengths.maxDayLength, "─") << "─┼─" << repeatCharacter(maxLengths.maxPuzzleLength, "─") << "─┼─" << repeatCharacter(maxLengths.maxPartLength, "─") << "─┼─" << repeatCharacter(maxLengths.maxSolutionLength, "─") << "─┼─" << repeatCharacter(maxLengths.maxTimingLength, "─") << "─╢" << std::endl;
 
     bool firstRow = true;
@@ -178,13 +185,33 @@ int main(int argc, char *argv[])
                       << " │ " << std::setw(maxLengths.maxTimingLength) << ""
                       << " ║" << std::endl;
         }
-        std::cout << "║ " << std::setw(maxLengths.maxDayLength) << dayResults[i].day << " │ " << std::setw(maxLengths.maxPuzzleLength) << dayResults[i].title << " │ " << std::setw(maxLengths.maxPartLength) << "1"
-                  << " │ " << std::setw(maxLengths.maxSolutionLength) << dayResults[i].solution1 << " │ " << std::setw(maxLengths.maxTimingLength) << dayResults[i].time1
+
+        std::cout << "║ " << std::right << std::setw(maxLengths.maxDayLength) << dayResults[i].day << " │ " << std::left << std::setw(maxLengths.maxPuzzleLength) << dayResults[i].title << " │ " << std::right << std::setw(maxLengths.maxPartLength) << "1"
+                  << " │ ";
+        if (dayResults[i].solution1_is_number)
+        {
+            std::cout << std::right;
+        }
+        else
+        {
+            std::cout << std::left;
+        }
+        std::cout << std::setw(maxLengths.maxSolutionLength) << dayResults[i].solution1 << " │ " << std::right << std::setw(maxLengths.maxTimingLength) << dayResults[i].time1
                   << " ║" << std::endl;
-        std::cout << "║ " << std::setw(maxLengths.maxDayLength) << ""
+
+        std::cout << "║ " << std::right << std::setw(maxLengths.maxDayLength) << ""
                   << " │ " << std::setw(maxLengths.maxPuzzleLength) << ""
                   << " │ " << std::setw(maxLengths.maxPartLength) << "2"
-                  << " │ " << std::setw(maxLengths.maxSolutionLength) << dayResults[i].solution2 << " │ " << std::setw(maxLengths.maxTimingLength) << dayResults[i].time2
+                  << " │ ";
+        if (dayResults[i].solution2_is_number)
+        {
+            std::cout << std::right;
+        }
+        else
+        {
+            std::cout << std::left;
+        }
+        std::cout << std::setw(maxLengths.maxSolutionLength) << dayResults[i].solution2 << " │ " << std::right << std::setw(maxLengths.maxTimingLength) << dayResults[i].time2
                   << " ║" << std::endl;
     }
 
