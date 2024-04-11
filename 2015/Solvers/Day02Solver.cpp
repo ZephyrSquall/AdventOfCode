@@ -5,7 +5,7 @@
 #include <algorithm>
 #include "Day02Solver.h"
 
-int AdventOfCode2015::Day02Solver::SolvePart1()
+std::string AdventOfCode2015::Day02Solver::SolvePart1()
 {
     std::ifstream infile("PuzzleInputs/02.txt");
     std::string line;
@@ -30,10 +30,10 @@ int AdventOfCode2015::Day02Solver::SolvePart1()
         totalArea += wrappingPaperArea;
     }
 
-    return totalArea;
+    return std::to_string(totalArea);
 }
 
-int AdventOfCode2015::Day02Solver::SolvePart2()
+std::string AdventOfCode2015::Day02Solver::SolvePart2()
 {
     std::ifstream infile("PuzzleInputs/02.txt");
     std::string line;
@@ -59,5 +59,5 @@ int AdventOfCode2015::Day02Solver::SolvePart2()
         totalLength += ribbonLength;
     }
 
-    return totalLength;
+    return std::to_string(totalLength);
 }

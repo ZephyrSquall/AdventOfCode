@@ -2,7 +2,7 @@
 #include <string>
 #include "Day01Solver.h"
 
-int AdventOfCode2015::Day01Solver::SolvePart1()
+std::string AdventOfCode2015::Day01Solver::SolvePart1()
 {
     std::ifstream puzzleInput("PuzzleInputs/01.txt");
     std::string line;
@@ -18,10 +18,10 @@ int AdventOfCode2015::Day01Solver::SolvePart1()
             floor--;
     }
 
-    return floor;
+    return std::to_string(floor);
 }
 
-int AdventOfCode2015::Day01Solver::SolvePart2()
+std::string AdventOfCode2015::Day01Solver::SolvePart2()
 {
     std::ifstream puzzleInput("PuzzleInputs/01.txt");
     std::string line;
@@ -45,5 +45,5 @@ int AdventOfCode2015::Day01Solver::SolvePart2()
         }
     }
 
-    return firstBasementPosition;
+    return std::to_string(firstBasementPosition);
 }

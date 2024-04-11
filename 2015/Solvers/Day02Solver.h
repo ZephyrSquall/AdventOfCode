@@ -7,7 +7,7 @@ namespace AdventOfCode2015
     {
     public:
         Day02Solver(std::string str) : Solver(str){};
-        int SolvePart1();
-        int SolvePart2();
+        std::string SolvePart1();
+        std::string SolvePart2();
     };
 }

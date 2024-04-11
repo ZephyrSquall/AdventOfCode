@@ -13,6 +13,7 @@
 #include "Solvers/Day08Solver.h"
 #include "Solvers/Day09Solver.h"
 #include "Solvers/Day10Solver.h"
+#include "Solvers/Day11Solver.h"
 #include "Solver.h"
 
 // "═" (the box-drawing character, not an equal sign) is stored as two characters in a char array,
@@ -50,12 +51,12 @@ DayResult getResults(int day, MaxLengths &maxLengths, AdventOfCode2015::Solver *
     DayResult dayResult{};
 
     auto solution1Start = std::chrono::high_resolution_clock::now();
-    int solution1 = solver->SolvePart1();
+    std::string solution1 = solver->SolvePart1();
     auto solution1End = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double, std::milli> time1 = solution1End - solution1Start;
 
     auto solution2Start = std::chrono::high_resolution_clock::now();
-    int solution2 = solver->SolvePart2();
+    std::string solution2 = solver->SolvePart2();
     auto solution2End = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double, std::milli> time2 = solution2End - solution2Start;
 
@@ -66,12 +67,12 @@ DayResult getResults(int day, MaxLengths &maxLengths, AdventOfCode2015::Solver *
     if (titleSize > maxLengths.maxPuzzleLength)
         maxLengths.maxPuzzleLength = titleSize;
 
-    dayResult.solution1 = std::to_string(solution1);
+    dayResult.solution1 = solution1;
     int solution1Size = dayResult.solution1.size();
     if (solution1Size > maxLengths.maxSolutionLength)
         maxLengths.maxSolutionLength = solution1Size;
 
-    dayResult.solution2 = std::to_string(solution2);
+    dayResult.solution2 = solution2;
     int solution2Size = dayResult.solution2.size();
     if (solution2Size > maxLengths.maxSolutionLength)
         maxLengths.maxSolutionLength = solution2Size;
@@ -91,7 +92,7 @@ DayResult getResults(int day, MaxLengths &maxLengths, AdventOfCode2015::Solver *
 
 int main(int argc, char *argv[])
 {
-    const int NUM_SOLVERS = 10;
+    const int NUM_SOLVERS = 11;
 
     AdventOfCode2015::Day01Solver day01Solver("Not Quite Lisp");
     AdventOfCode2015::Day02Solver day02Solver("I Was Told There Would Be No Math");
@@ -103,6 +104,7 @@ int main(int argc, char *argv[])
     AdventOfCode2015::Day08Solver day08Solver("Matchsticks");
     AdventOfCode2015::Day09Solver day09Solver("All in a Single Night");
     AdventOfCode2015::Day10Solver day10Solver("Elves Look, Elves Say");
+    AdventOfCode2015::Day11Solver day11Solver("Corporate Policy");
 
     AdventOfCode2015::Solver *solvers[NUM_SOLVERS] = {
         &day01Solver,
@@ -115,6 +117,7 @@ int main(int argc, char *argv[])
         &day08Solver,
         &day09Solver,
         &day10Solver,
+        &day11Solver,
     };
 
     const std::string DAY_TITLE = "Day";

@@ -3,11 +3,10 @@
 
 namespace AdventOfCode2015
 {
-    class Day07Solver : public Solver
+    class Day11Solver : public Solver
     {
     public:
-        Day07Solver(std::string str) : Solver(str){};
-        int part_1_answer;
+        Day11Solver(std::string str) : Solver(str){};
         std::string SolvePart1();
         std::string SolvePart2();
     };

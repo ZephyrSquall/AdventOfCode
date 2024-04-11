@@ -3,7 +3,7 @@
 #include <string>
 #include "Day08Solver.h"
 
-int AdventOfCode2015::Day08Solver::SolvePart1()
+std::string AdventOfCode2015::Day08Solver::SolvePart1()
 {
     std::ifstream infile("PuzzleInputs/08.txt");
     std::string line;
@@ -68,10 +68,10 @@ int AdventOfCode2015::Day08Solver::SolvePart1()
         total_difference -= code_size;
     }
 
-    return total_difference;
+    return std::to_string(total_difference);
 }
 
-int AdventOfCode2015::Day08Solver::SolvePart2()
+std::string AdventOfCode2015::Day08Solver::SolvePart2()
 {
     std::ifstream infile("PuzzleInputs/08.txt");
     std::string line;
@@ -106,5 +106,5 @@ int AdventOfCode2015::Day08Solver::SolvePart2()
         total_difference -= literal_size;
     }
 
-    return total_difference;
+    return std::to_string(total_difference);
 }

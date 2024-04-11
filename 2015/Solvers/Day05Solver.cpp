@@ -7,7 +7,7 @@
 #include <format>
 #include "Day05Solver.h"
 
-int AdventOfCode2015::Day05Solver::SolvePart1()
+std::string AdventOfCode2015::Day05Solver::SolvePart1()
 {
     std::ifstream infile("PuzzleInputs/05.txt");
     std::string line;
@@ -45,10 +45,10 @@ int AdventOfCode2015::Day05Solver::SolvePart1()
             nice_strings++;
     }
 
-    return nice_strings;
+    return std::to_string(nice_strings);
 }
 
-int AdventOfCode2015::Day05Solver::SolvePart2()
+std::string AdventOfCode2015::Day05Solver::SolvePart2()
 {
     std::ifstream infile("PuzzleInputs/05.txt");
     std::string line;
@@ -76,5 +76,5 @@ int AdventOfCode2015::Day05Solver::SolvePart2()
             nice_strings++;
     }
 
-    return nice_strings;
+    return std::to_string(nice_strings);
 }

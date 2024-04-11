@@ -57,7 +57,7 @@ Edge get_edge(std::string line)
     return edge;
 }
 
-int AdventOfCode2015::Day09Solver::SolvePart1()
+std::string AdventOfCode2015::Day09Solver::SolvePart1()
 {
     std::ifstream infile("PuzzleInputs/09.txt");
     std::string line;
@@ -161,10 +161,10 @@ int AdventOfCode2015::Day09Solver::SolvePart1()
         find_next_node(explored_nodes, current_distance);
     }
 
-    return minimum_distance;
+    return std::to_string(minimum_distance);
 }
 
-int AdventOfCode2015::Day09Solver::SolvePart2()
+std::string AdventOfCode2015::Day09Solver::SolvePart2()
 {
     std::ifstream infile("PuzzleInputs/09.txt");
     std::string line;
@@ -262,5 +262,5 @@ int AdventOfCode2015::Day09Solver::SolvePart2()
         find_next_node(explored_nodes, current_distance);
     }
 
-    return maximum_distance;
+    return std::to_string(maximum_distance);
 }

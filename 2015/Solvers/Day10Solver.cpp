@@ -45,7 +45,7 @@ std::string look_and_see(std::string line, int repetitions)
     return line;
 }
 
-int AdventOfCode2015::Day10Solver::SolvePart1()
+std::string AdventOfCode2015::Day10Solver::SolvePart1()
 {
     std::ifstream infile("PuzzleInputs/10.txt");
     std::string line;
@@ -53,10 +53,10 @@ int AdventOfCode2015::Day10Solver::SolvePart1()
 
     line = look_and_see(line, 40);
 
-    return line.size();
+    return std::to_string(line.size());
 }
 
-int AdventOfCode2015::Day10Solver::SolvePart2()
+std::string AdventOfCode2015::Day10Solver::SolvePart2()
 {
     std::ifstream infile("PuzzleInputs/10.txt");
     std::string line;
@@ -64,5 +64,5 @@ int AdventOfCode2015::Day10Solver::SolvePart2()
 
     line = look_and_see(line, 50);
 
-    return line.size();
+    return std::to_string(line.size());
 }

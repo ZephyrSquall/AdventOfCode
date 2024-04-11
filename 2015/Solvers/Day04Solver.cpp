@@ -128,7 +128,7 @@ static std::string md5(std::string str)
     return output;
 }
 
-int AdventOfCode2015::Day04Solver::SolvePart1()
+std::string AdventOfCode2015::Day04Solver::SolvePart1()
 {
     std::ifstream infile("PuzzleInputs/04.txt");
     std::string line;
@@ -144,10 +144,10 @@ int AdventOfCode2015::Day04Solver::SolvePart1()
         hash = md5(input);
     }
 
-    return i;
+    return std::to_string(i);
 }
 
-int AdventOfCode2015::Day04Solver::SolvePart2()
+std::string AdventOfCode2015::Day04Solver::SolvePart2()
 {
     std::ifstream infile("PuzzleInputs/04.txt");
     std::string line;
@@ -163,5 +163,5 @@ int AdventOfCode2015::Day04Solver::SolvePart2()
         hash = md5(input);
     }
 
-    return i;
+    return std::to_string(i);
 }

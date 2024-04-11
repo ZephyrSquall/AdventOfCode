@@ -4,7 +4,7 @@
 #include <vector>
 #include "Day03Solver.h"
 
-int AdventOfCode2015::Day03Solver::SolvePart1()
+std::string AdventOfCode2015::Day03Solver::SolvePart1()
 {
     std::ifstream infile("PuzzleInputs/03.txt");
     std::string line;
@@ -55,10 +55,10 @@ int AdventOfCode2015::Day03Solver::SolvePart1()
         }
     }
 
-    return housesVisited;
+    return std::to_string(housesVisited);
 }
 
-int AdventOfCode2015::Day03Solver::SolvePart2()
+std::string AdventOfCode2015::Day03Solver::SolvePart2()
 {
     std::ifstream infile("PuzzleInputs/03.txt");
     std::string line;
@@ -113,5 +113,5 @@ int AdventOfCode2015::Day03Solver::SolvePart2()
         }
     }
 
-    return housesVisited;
+    return std::to_string(housesVisited);
 }

@@ -65,7 +65,7 @@ static void get_action(std::string line, Action &action, int start_coordinate[],
     }
 }
 
-int AdventOfCode2015::Day06Solver::SolvePart1()
+std::string AdventOfCode2015::Day06Solver::SolvePart1()
 {
     std::ifstream infile("PuzzleInputs/06.txt");
     std::string line;
@@ -119,10 +119,10 @@ int AdventOfCode2015::Day06Solver::SolvePart1()
         }
     }
 
-    return on_lights;
+    return std::to_string(on_lights);
 }
 
-int AdventOfCode2015::Day06Solver::SolvePart2()
+std::string AdventOfCode2015::Day06Solver::SolvePart2()
 {
     std::ifstream infile("PuzzleInputs/06.txt");
     std::string line;
@@ -170,5 +170,5 @@ int AdventOfCode2015::Day06Solver::SolvePart2()
     }
 
     delete light_brightnesses;
-    return total_brightness;
+    return std::to_string(total_brightness);
 }

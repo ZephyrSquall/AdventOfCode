@@ -295,7 +295,7 @@ std::map<std::string, uint16_t> execute_operations(std::vector<Operation> operat
     return values;
 }
 
-int AdventOfCode2015::Day07Solver::SolvePart1()
+std::string AdventOfCode2015::Day07Solver::SolvePart1()
 {
     std::ifstream infile("PuzzleInputs/07.txt");
     std::string line;
@@ -312,10 +312,10 @@ int AdventOfCode2015::Day07Solver::SolvePart1()
     // Store the answer for part 1 because part 2 requires it.
     AdventOfCode2015::Day07Solver::part_1_answer = values["a"];
 
-    return values["a"];
+    return std::to_string(values["a"]);
 }
 
-int AdventOfCode2015::Day07Solver::SolvePart2()
+std::string AdventOfCode2015::Day07Solver::SolvePart2()
 {
     std::ifstream infile("PuzzleInputs/07.txt");
     std::string line;
@@ -337,5 +337,5 @@ int AdventOfCode2015::Day07Solver::SolvePart2()
 
     std::map<std::string, uint16_t> values = execute_operations(operations);
 
-    return values["a"];
+    return std::to_string(values["a"]);
 }
