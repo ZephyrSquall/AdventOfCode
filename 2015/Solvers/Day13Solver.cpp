@@ -73,26 +73,8 @@ Relationship get_relationship(std::string line)
     return relationship;
 }
 
-std::string AdventOfCode2015::Day13Solver::SolvePart1()
+int get_maximum_happiness(std::vector<std::string> attendees, std::vector<Relationship> relationships)
 {
-    std::ifstream infile("PuzzleInputs/13.txt");
-    std::string line;
-
-    std::vector<std::string> attendees;
-    std::vector<Relationship> relationships;
-
-    while (getline(infile, line))
-    {
-        Relationship relationship = get_relationship(line);
-
-        if (std::count(attendees.begin(), attendees.end(), relationship.attendee) == 0)
-        {
-            attendees.push_back(relationship.attendee);
-        }
-
-        relationships.push_back(relationship);
-    }
-
     int maximum_happiness = INT_MIN;
     int attendees_size = attendees.size();
 
@@ -116,13 +98,13 @@ std::string AdventOfCode2015::Day13Solver::SolvePart1()
         // Handle the first and last attendee separately, as their indexes must be manually adjusted to wrap around to the other end of the vector (since the table is a circle).
         happiness_total += get_happiness_modifier(attendee_permutation[0], attendee_permutation[attendees_size - 1]);
         happiness_total += get_happiness_modifier(attendee_permutation[0], attendee_permutation[1]);
-        happiness_total += get_happiness_modifier(attendee_permutation[attendees_size - 1], attendee_permutation[attendees_size-2]);
+        happiness_total += get_happiness_modifier(attendee_permutation[attendees_size - 1], attendee_permutation[attendees_size - 2]);
         happiness_total += get_happiness_modifier(attendee_permutation[attendees_size - 1], attendee_permutation[0]);
 
-        for(int i = 1; i < attendees_size - 1; i++)
+        for (int i = 1; i < attendees_size - 1; i++)
         {
-            happiness_total += get_happiness_modifier(attendee_permutation[i], attendee_permutation[i-1]);
-            happiness_total += get_happiness_modifier(attendee_permutation[i], attendee_permutation[i+1]);
+            happiness_total += get_happiness_modifier(attendee_permutation[i], attendee_permutation[i - 1]);
+            happiness_total += get_happiness_modifier(attendee_permutation[i], attendee_permutation[i + 1]);
         }
 
         if (happiness_total > maximum_happiness)
@@ -166,10 +148,62 @@ std::string AdventOfCode2015::Day13Solver::SolvePart1()
 
     generate(attendees_size, attendees);
 
+    return maximum_happiness;
+}
+
+std::string AdventOfCode2015::Day13Solver::SolvePart1()
+{
+    std::ifstream infile("PuzzleInputs/13.txt");
+    std::string line;
+
+    std::vector<std::string> attendees;
+    std::vector<Relationship> relationships;
+
+    while (getline(infile, line))
+    {
+        Relationship relationship = get_relationship(line);
+
+        if (std::count(attendees.begin(), attendees.end(), relationship.attendee) == 0)
+        {
+            attendees.push_back(relationship.attendee);
+        }
+
+        relationships.push_back(relationship);
+    }
+
+    int maximum_happiness = get_maximum_happiness(attendees, relationships);
+
     return std::to_string(maximum_happiness);
 }
 
 std::string AdventOfCode2015::Day13Solver::SolvePart2()
 {
-    return "0";
+    std::ifstream infile("PuzzleInputs/13.txt");
+    std::string line;
+
+    std::vector<std::string> attendees;
+    std::vector<Relationship> relationships;
+
+    while (getline(infile, line))
+    {
+        Relationship relationship = get_relationship(line);
+
+        if (std::count(attendees.begin(), attendees.end(), relationship.attendee) == 0)
+        {
+            attendees.push_back(relationship.attendee);
+        }
+
+        relationships.push_back(relationship);
+    }
+
+    for (std::string attendee : attendees)
+    {
+        relationships.push_back(Relationship{.attendee = "me", .neighbour = attendee, .happiness_modifier = 0});
+        relationships.push_back(Relationship{.attendee = attendee, .neighbour = "me", .happiness_modifier = 0});
+    }
+    attendees.push_back("me");
+
+    int maximum_happiness = get_maximum_happiness(attendees, relationships);
+
+    return std::to_string(maximum_happiness);
 }
