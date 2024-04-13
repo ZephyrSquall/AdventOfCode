@@ -15,6 +15,7 @@ struct Reindeer
     int distance = 0;
     int state_timer = 0;
     bool is_resting = false;
+    int points = 0;
 };
 
 Reindeer get_reindeer(std::string line)
@@ -106,7 +107,7 @@ std::string AdventOfCode2015::Day14Solver::SolvePart1()
             reindeer.state_timer++;
             if (reindeer.is_resting)
             {
-                if(reindeer.state_timer == reindeer.resting_time)
+                if (reindeer.state_timer == reindeer.resting_time)
                 {
                     reindeer.is_resting = false;
                     reindeer.state_timer = 0;
@@ -116,7 +117,7 @@ std::string AdventOfCode2015::Day14Solver::SolvePart1()
             {
                 reindeer.distance += reindeer.speed;
 
-                if(reindeer.state_timer == reindeer.flying_time)
+                if (reindeer.state_timer == reindeer.flying_time)
                 {
                     reindeer.is_resting = true;
                     reindeer.state_timer = 0;
@@ -126,19 +127,82 @@ std::string AdventOfCode2015::Day14Solver::SolvePart1()
     }
 
     int max_distance = 0;
-    
+
     for (Reindeer reindeer : reindeers)
     {
         if (reindeer.distance > max_distance)
         {
             max_distance = reindeer.distance;
         }
-    }  
+    }
 
     return std::to_string(max_distance);
 }
 
 std::string AdventOfCode2015::Day14Solver::SolvePart2()
 {
-    return "0";
+    std::ifstream infile("PuzzleInputs/14.txt");
+    std::string line;
+
+    std::vector<Reindeer> reindeers = {};
+
+    while (getline(infile, line))
+    {
+        reindeers.push_back(get_reindeer(line));
+    }
+
+    const int race_time = 2503;
+
+    for (int i = 0; i < race_time; i++)
+    {
+        int max_distance = 0;
+
+        for (Reindeer &reindeer : reindeers)
+        {
+            reindeer.state_timer++;
+            if (reindeer.is_resting)
+            {
+                if (reindeer.state_timer == reindeer.resting_time)
+                {
+                    reindeer.is_resting = false;
+                    reindeer.state_timer = 0;
+                }
+            }
+            else
+            {
+                reindeer.distance += reindeer.speed;
+
+                if (reindeer.state_timer == reindeer.flying_time)
+                {
+                    reindeer.is_resting = true;
+                    reindeer.state_timer = 0;
+                }
+            }
+
+            if (reindeer.distance > max_distance)
+            {
+                max_distance = reindeer.distance;
+            }
+        }
+
+        for (Reindeer &reindeer : reindeers)
+        {
+            if (reindeer.distance == max_distance)
+            {
+                reindeer.points++;
+            }
+        }
+    }
+
+    int max_points = 0;
+
+    for (Reindeer reindeer : reindeers)
+    {
+        if (reindeer.points > max_points)
+        {
+            max_points = reindeer.points;
+        }
+    }
+
+    return std::to_string(max_points);
 }
