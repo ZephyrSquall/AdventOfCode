@@ -17,6 +17,7 @@
 #include "Solvers/Day11Solver.h"
 #include "Solvers/Day12Solver.h"
 #include "Solvers/Day13Solver.h"
+#include "Solvers/Day14Solver.h"
 #include "Solver.h"
 
 // "═" (the box-drawing character, not an equal sign) is stored as two characters in a char array,
@@ -101,7 +102,7 @@ DayResult getResults(int day, MaxLengths &maxLengths, AdventOfCode2015::Solver *
 
 int main(int argc, char *argv[])
 {
-    const int NUM_SOLVERS = 13;
+    const int NUM_SOLVERS = 14;
 
     AdventOfCode2015::Day01Solver day01Solver("Not Quite Lisp");
     AdventOfCode2015::Day02Solver day02Solver("I Was Told There Would Be No Math");
@@ -116,6 +117,7 @@ int main(int argc, char *argv[])
     AdventOfCode2015::Day11Solver day11Solver("Corporate Policy");
     AdventOfCode2015::Day12Solver day12Solver("JSAbacusFramework.io");
     AdventOfCode2015::Day13Solver day13Solver("Knights of the Dinner Table");
+    AdventOfCode2015::Day14Solver day14Solver("Reindeer Olympics");
 
     AdventOfCode2015::Solver *solvers[NUM_SOLVERS] = {
         &day01Solver,
@@ -131,6 +133,7 @@ int main(int argc, char *argv[])
         &day11Solver,
         &day12Solver,
         &day13Solver,
+        &day14Solver,
     };
 
     const std::string DAY_TITLE = "Day";
