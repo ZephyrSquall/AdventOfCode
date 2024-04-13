@@ -22,6 +22,19 @@ struct Sue
     std::optional<int> perfumes = std::nullopt;
 };
 
+Sue correct_sue = {
+    .children = 3,
+    .cats = 7,
+    .samoyeds = 2,
+    .pomeranians = 3,
+    .akitas = 0,
+    .vizslas = 0,
+    .goldfish = 5,
+    .trees = 3,
+    .cars = 2,
+    .perfumes = 1,
+};
+
 Sue get_sue(std::string line)
 {
     Sue sue;
@@ -123,19 +136,6 @@ std::string AdventOfCode2015::Day16Solver::SolvePart1()
         sues.push_back(get_sue(line));
     }
 
-    Sue correct_sue = {
-        .children = 3,
-        .cats = 7,
-        .samoyeds = 2,
-        .pomeranians = 3,
-        .akitas = 0,
-        .vizslas = 0,
-        .goldfish = 5,
-        .trees = 3,
-        .cars = 2,
-        .perfumes = 1,
-    };
-
     int correct_sue_number = 0;
 
     // Check each Sue. Immediately continue to the next loop as soon as an inconsistent value is
@@ -194,5 +194,76 @@ std::string AdventOfCode2015::Day16Solver::SolvePart1()
 
 std::string AdventOfCode2015::Day16Solver::SolvePart2()
 {
-    return "0";
+    std::ifstream infile("PuzzleInputs/16.txt");
+    std::string line;
+
+    std::vector<Sue> sues = {};
+
+    while (getline(infile, line))
+    {
+        sues.push_back(get_sue(line));
+    }
+
+    int correct_sue_number = 0;
+
+    // Check each Sue. Immediately continue to the next loop as soon as an inconsistent value is
+    // found (a value can only be inconsistent if it exists to check has.value() first)
+    for (Sue sue : sues)
+    {
+        if (sue.children.has_value() && sue.children != correct_sue.children)
+        {
+            continue;
+        }
+        // The correct sue has greater than the indicated number of cats, so the value is
+        // inconsistent if it is smaller or equal to it.
+        if (sue.cats.has_value() && sue.cats <= correct_sue.cats)
+        {
+            continue;
+        }
+        if (sue.samoyeds.has_value() && sue.samoyeds != correct_sue.samoyeds)
+        {
+            continue;
+        }
+        // The correct sue has less than the indicated number of pomeranians, so the value is
+        // inconsistent if it is greater or equal to it.
+        if (sue.pomeranians.has_value() && sue.pomeranians >= correct_sue.pomeranians)
+        {
+            continue;
+        }
+        if (sue.akitas.has_value() && sue.akitas != correct_sue.akitas)
+        {
+            continue;
+        }
+        if (sue.vizslas.has_value() && sue.vizslas != correct_sue.vizslas)
+        {
+            continue;
+        }
+        // The correct sue has less than the indicated number of goldfish, so the value is
+        // inconsistent if it is greater or equal to it.
+        if (sue.goldfish.has_value() && sue.goldfish >= correct_sue.goldfish)
+        {
+            continue;
+        }
+        // The correct sue has greater than the indicated number of trees, so the value is
+        // inconsistent if it is smaller or equal to it.
+        if (sue.trees.has_value() && sue.trees <= correct_sue.trees)
+        {
+            continue;
+        }
+        if (sue.cars.has_value() && sue.cars != correct_sue.cars)
+        {
+            continue;
+        }
+        if (sue.perfumes.has_value() && sue.perfumes != correct_sue.perfumes)
+        {
+            continue;
+        }
+
+        // If no continue statement has been hit yet, then every value is consistent, so this is the
+        // correct Sue.
+        correct_sue_number = sue.number;
+        break;
+    }
+
+    return std::to_string(correct_sue_number);
 }
