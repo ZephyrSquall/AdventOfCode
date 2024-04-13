@@ -120,18 +120,8 @@ Ingredient get_ingredient(std::string line)
     return ingredient;
 }
 
-std::string AdventOfCode2015::Day15Solver::SolvePart1()
+int get_maximum_cookie_score(std::vector<Ingredient> ingredients, bool calorie_limit)
 {
-    std::ifstream infile("PuzzleInputs/15.txt");
-    std::string line;
-
-    std::vector<Ingredient> ingredients = {};
-
-    while (getline(infile, line))
-    {
-        ingredients.push_back(get_ingredient(line));
-    }
-
     const int teaspoon_capacity = 100;
 
     // Get a vector representing the teaspoon amounts of the ingredient with the corresponding
@@ -144,12 +134,13 @@ std::string AdventOfCode2015::Day15Solver::SolvePart1()
 
     // Lambda to be called on every combination of teaspoons to calculate the cookie's score and
     // update the maximum cookie score if needed.
-    std::function<void(std::vector<int>)> check_cookie_score = [ingredients, &max_cookie_score](std::vector<int> teaspoons)
+    std::function<void(std::vector<int>)> check_cookie_score = [ingredients, &max_cookie_score, calorie_limit](std::vector<int> teaspoons)
     {
         int cookie_capacity = 0;
         int cookie_durability = 0;
         int cookie_flavor = 0;
         int cookie_texture = 0;
+        int cookie_calories = 0;
 
         for (int i = 0; i < teaspoons.size(); i++)
         {
@@ -157,11 +148,12 @@ std::string AdventOfCode2015::Day15Solver::SolvePart1()
             cookie_durability += teaspoons[i] * ingredients[i].durability;
             cookie_flavor += teaspoons[i] * ingredients[i].flavor;
             cookie_texture += teaspoons[i] * ingredients[i].texture;
+            cookie_calories += teaspoons[i] * ingredients[i].calories;
         }
 
         int cookie_score;
 
-        if (cookie_capacity <= 0 || cookie_durability <= 0 || cookie_flavor <= 0 || cookie_texture <= 0)
+        if (cookie_capacity <= 0 || cookie_durability <= 0 || cookie_flavor <= 0 || cookie_texture <= 0 || (calorie_limit && cookie_calories != 500))
         {
             cookie_score = 0;
         }
@@ -205,10 +197,39 @@ std::string AdventOfCode2015::Day15Solver::SolvePart1()
 
     generate_teaspoons(teaspoons.size() - 1, teaspoons);
 
+    return max_cookie_score;
+}
+
+std::string AdventOfCode2015::Day15Solver::SolvePart1()
+{
+    std::ifstream infile("PuzzleInputs/15.txt");
+    std::string line;
+
+    std::vector<Ingredient> ingredients = {};
+
+    while (getline(infile, line))
+    {
+        ingredients.push_back(get_ingredient(line));
+    }
+
+    int max_cookie_score = get_maximum_cookie_score(ingredients, false);
+
     return std::to_string(max_cookie_score);
 }
 
 std::string AdventOfCode2015::Day15Solver::SolvePart2()
 {
-    return "0";
+    std::ifstream infile("PuzzleInputs/15.txt");
+    std::string line;
+
+    std::vector<Ingredient> ingredients = {};
+
+    while (getline(infile, line))
+    {
+        ingredients.push_back(get_ingredient(line));
+    }
+
+    int max_cookie_score = get_maximum_cookie_score(ingredients, true);
+
+    return std::to_string(max_cookie_score);
 }
