@@ -1,6 +1,12 @@
 # AdventOfCode
 My solutions to the Advent of Code puzzles.
 
-Solutions are written in C#. Run them with `dotnet run day-number`, where `day-number` is the day to
-solve (both of the day's parts are solved at once) e.g. to get day 7's solutions, run `dotnet run
-7`.
+I use different programming languages for each year. These are:
+* 2015: C++
+* 2016: Python
+* 2023: C#
+
+See the readme in each year's folder for commands to run the solutions for that year (this assumes
+you've installed any required compilers/runners/etc. for that language). If no additional arguments
+are provided, it runs for every solved puzzle. If numeric arguments are provided, it instead runs
+only for the days specified (e.g. for 2023, `dotnet run 7` runs only day 7's solver).
