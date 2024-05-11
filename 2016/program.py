@@ -3,6 +3,7 @@ import sys
 import time
 from solver import Solver
 from Solvers.day_01_solver import Day01Solver
+from Solvers.day_02_solver import Day02Solver
 
 # Required to print box-drawing characters.
 sys.stdout.reconfigure(encoding='utf-8')
@@ -14,6 +15,7 @@ SOLUTION_TITLE: Final[str] = "Solution"
 TIMING_TITLE: Final[str] = "Time (ms)"
 solvers: dict[int, Solver] = {
     1: Day01Solver,
+    2: Day02Solver,
 }
 
 class MaxLengths:
