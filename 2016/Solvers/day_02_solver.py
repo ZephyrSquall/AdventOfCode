@@ -2,7 +2,7 @@ from solver import Solver
 
 class Day02Solver(Solver):
     puzzle_title = "Bathroom Security"
-    
+
     def solve_part_1() -> str:
         with open('PuzzleInputs/02.txt') as puzzle_input:
             input_lines: list[str] = puzzle_input.read().splitlines()

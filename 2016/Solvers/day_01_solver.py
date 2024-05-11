@@ -2,7 +2,7 @@ from solver import Solver
 
 class Day01Solver(Solver):
     puzzle_title = "No Time for a Taxicab"
-    
+
     def solve_part_1() -> str:
         with open('PuzzleInputs/01.txt') as puzzle_input:
             input_line: str = puzzle_input.read()
