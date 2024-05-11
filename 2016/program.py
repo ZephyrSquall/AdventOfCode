@@ -32,16 +32,14 @@ class DayResult:
         self.puzzle_title: str = solver.puzzle_title
 
         start_time: float = time.time()
-        solution_1: int = solver.solve_part_1()
+        self.solution_1: str = solver.solve_part_1()
         end_time: float = time.time()
-        self.solution_1: str = str(solution_1)
         # Round time taken to 4 decimal places
         self.time_1: str = "{0:.4f}".format((end_time - start_time) * 1000)
 
         start_time: float = time.time()
-        solution_2: int = solver.solve_part_2()
+        self.solution_2: str = solver.solve_part_2()
         end_time: float = time.time()
-        self.solution_2: str = str(solution_2)
         # Round time taken to 4 decimal places
         self.time_2: str = "{0:.4f}".format((end_time - start_time) * 1000)
 

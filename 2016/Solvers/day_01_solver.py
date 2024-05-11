@@ -3,7 +3,7 @@ from solver import Solver
 class Day01Solver(Solver):
     puzzle_title = "No Time for a Taxicab"
     
-    def solve_part_1() -> int:
+    def solve_part_1() -> str:
         with open('PuzzleInputs/01.txt') as puzzle_input:
             input_line: str = puzzle_input.read()
         lines: list[str] = input_line.split(', ')
@@ -31,10 +31,10 @@ class Day01Solver(Solver):
                 horizontal_offset -= distance
 
         total_distance: int = abs(horizontal_offset) + abs(vertical_offset)
-        return total_distance
+        return str(total_distance)
 
 
-    def solve_part_2() -> int:
+    def solve_part_2() -> str:
         with open('PuzzleInputs/01.txt') as puzzle_input:
             input_line: str = puzzle_input.read()
         lines: list[str] = input_line.split(', ')
@@ -129,4 +129,4 @@ class Day01Solver(Solver):
             visited_coordinates.append((horizontal_offset, vertical_offset))
 
         total_distance: int = abs(horizontal_offset) + abs(vertical_offset)
-        return total_distance
+        return str(total_distance)
