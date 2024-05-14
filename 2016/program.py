@@ -7,6 +7,7 @@ from Solvers.day_02_solver import Day02Solver
 from Solvers.day_03_solver import Day03Solver
 from Solvers.day_04_solver import Day04Solver
 from Solvers.day_05_solver import Day05Solver
+from Solvers.day_06_solver import Day06Solver
 
 # Required to print box-drawing characters.
 sys.stdout.reconfigure(encoding='utf-8')
@@ -22,6 +23,7 @@ solvers: dict[int, Solver] = {
     3: Day03Solver,
     4: Day04Solver,
     5: Day05Solver,
+    6: Day06Solver,
 }
 
 class MaxLengths:
