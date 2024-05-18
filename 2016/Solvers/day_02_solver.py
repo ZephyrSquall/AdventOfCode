@@ -3,23 +3,24 @@ from solver import Solver
 class Day02Solver(Solver):
     puzzle_title = "Bathroom Security"
 
+    @staticmethod
     def solve_part_1() -> str:
         with open('PuzzleInputs/02.txt') as puzzle_input:
             input_lines: list[str] = puzzle_input.read().splitlines()
 
         class Keypad:
             # (0,0) is the 1 at the top-left, (2,2) is the 9 at the bottom-right.
-            def __init__(self):
+            def __init__(self) -> None:
                 self._horizontal_position = 1
                 self._vertical_position = 1
 
-            def go_up(self):
+            def go_up(self) -> None:
                 self._vertical_position = max(self._vertical_position - 1, 0)
-            def go_down(self):
+            def go_down(self) -> None:
                 self._vertical_position = min(self._vertical_position + 1, 2)
-            def go_left(self):
+            def go_left(self) -> None:
                 self._horizontal_position = max(self._horizontal_position - 1, 0)
-            def go_right(self):
+            def go_right(self) -> None:
                 self._horizontal_position = min(self._horizontal_position + 1, 2)
 
             def current_key(self) -> int:
@@ -49,38 +50,39 @@ class Day02Solver(Solver):
         return str(result)
 
 
+    @staticmethod
     def solve_part_2() -> str:
         with open('PuzzleInputs/02.txt') as puzzle_input:
             input_lines: list[str] = puzzle_input.read().splitlines()
 
         class Keypad:
             # (2,0) is the 1 at the top-center, (4,4) is the blank at the bottom-right.
-            def __init__(self):
+            def __init__(self) -> None:
                 self._x = 0
                 self._y = 2
 
-            def go_up(self):
+            def go_up(self) -> None:
                 if (not (self._x == 0 and self._y == 2
                     or self._x == 1 and self._y == 1
                     or self._x == 2 and self._y == 0
                     or self._x == 3 and self._y == 1
                     or self._x == 4 and self._y == 2)):
                     self._y -= 1
-            def go_down(self):
+            def go_down(self) -> None:
                 if (not (self._x == 0 and self._y == 2
                     or self._x == 1 and self._y == 3
                     or self._x == 2 and self._y == 4
                     or self._x == 3 and self._y == 3
                     or self._x == 4 and self._y == 2)):
                     self._y += 1
-            def go_left(self):
+            def go_left(self) -> None:
                 if (not (self._x == 2 and self._y == 0
                     or self._x == 1 and self._y == 1
                     or self._x == 0 and self._y == 2
                     or self._x == 1 and self._y == 3
                     or self._x == 2 and self._y == 4)):
                     self._x -= 1
-            def go_right(self):
+            def go_right(self) -> None:
                 if (not (self._x == 2 and self._y == 0
                     or self._x == 3 and self._y == 1
                     or self._x == 4 and self._y == 2

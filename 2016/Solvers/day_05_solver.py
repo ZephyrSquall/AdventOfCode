@@ -4,6 +4,7 @@ from hashlib import md5
 class Day05Solver(Solver):
     puzzle_title = "How About a Nice Game of Chess?"
 
+    @staticmethod
     def solve_part_1() -> str:
         with open('PuzzleInputs/05.txt') as puzzle_input:
             input_line: str = puzzle_input.read()
@@ -27,11 +28,12 @@ class Day05Solver(Solver):
         return password
 
 
+    @staticmethod
     def solve_part_2() -> str:
         with open('PuzzleInputs/05.txt') as puzzle_input:
             input_line: str = puzzle_input.read()
 
-        password_characters: list[chr] = ['', '', '', '', '', '', '', '']
+        password_characters: list[str] = ['', '', '', '', '', '', '', '']
         index: int = 0
         is_password_digit_set: list[bool] = [False, False, False, False, False, False, False, False]
 
@@ -40,7 +42,7 @@ class Day05Solver(Solver):
             hash_output: str = md5(hash_input.encode("utf-8")).hexdigest()
 
             if (hash_output[:5] == "00000"):
-                position_character: chr = hash_output[5]
+                position_character: str = hash_output[5]
                 if (position_character in ['0', '1', '2', '3', '4', '5', '6', '7']):
                     position: int = int(position_character)
                     if (not is_password_digit_set[position]):

@@ -4,7 +4,8 @@ from functools import cmp_to_key
 class Day04Solver(Solver):
     puzzle_title = "Security Through Obscurity"
 
-    def _letter_count_compare(a: tuple[chr, int], b: tuple[chr, int]) -> int:
+    @staticmethod
+    def _letter_count_compare(a: tuple[str, int], b: tuple[str, int]) -> int:
         if (a[1] < b[1]):
             return -1
         elif (a[1] > b[1]):
@@ -29,12 +30,12 @@ class Day04Solver(Solver):
             self.checksum: str = input_split_1[1][:-1]
 
         def has_valid_checksum(self) -> bool:
-            letter_counts: list[tuple[chr, int]] = []
+            letter_counts: list[tuple[str, int]] = []
 
             for i in range(ord('a'),ord('z')+1):
-                letter: chr = chr(i)
-                letter_count: int = self.name.count(letter)
-                letter_counts.append((letter, letter_count))
+                letter: str = chr(i)
+                count: int = self.name.count(letter)
+                letter_counts.append((letter, count))
 
             letter_counts.sort(key=cmp_to_key(Day04Solver._letter_count_compare), reverse = True)
 
@@ -58,12 +59,13 @@ class Day04Solver(Solver):
                     if (letter_index > ord('z')):
                         letter_index -= 26
 
-                    shifted_letter: chr = chr(letter_index)
+                    shifted_letter: str = chr(letter_index)
                     decrypted_line += shifted_letter
 
             return decrypted_line
 
 
+    @staticmethod
     def solve_part_1() -> str:
         with open('PuzzleInputs/04.txt') as puzzle_input:
             input_lines: list[str] = puzzle_input.read().splitlines()
@@ -78,6 +80,7 @@ class Day04Solver(Solver):
         return str(sector_id_sum)
 
 
+    @staticmethod
     def solve_part_2() -> str:
         with open('PuzzleInputs/04.txt') as puzzle_input:
             input_lines: list[str] = puzzle_input.read().splitlines()

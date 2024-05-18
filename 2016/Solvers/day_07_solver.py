@@ -3,6 +3,7 @@ from solver import Solver
 class Day07Solver(Solver):
     puzzle_title = "Internet Protocol Version 7"
 
+    @staticmethod
     def solve_part_1() -> str:
         with open('PuzzleInputs/07.txt') as puzzle_input:
             input_lines: list[str] = puzzle_input.read().splitlines()
@@ -44,6 +45,7 @@ class Day07Solver(Solver):
         return str(tls_count)
 
 
+    @staticmethod
     def solve_part_2() -> str:
         with open('PuzzleInputs/07.txt') as puzzle_input:
             input_lines: list[str] = puzzle_input.read().splitlines()
@@ -53,9 +55,9 @@ class Day07Solver(Solver):
         for input_line in input_lines:
             # aba sequences are unique identified by their first two characters, so there's no need
             # to store the third character.
-            aba_sequences: list[tuple[chr, chr]] = []
+            aba_sequences: list[tuple[str, str]] = []
             # A bab_sequence is just an aba_sequence found inside square brackets
-            bab_sequences: list[tuple[chr, chr]] = []
+            bab_sequences: list[tuple[str, str]] = []
             is_inside_square_brackets: bool = False
             # Start at i=2 as there must be at least two preceding characters to be able to check
             # for an ABA or BAB pattern

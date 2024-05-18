@@ -3,6 +3,7 @@ from solver import Solver
 class Day03Solver(Solver):
     puzzle_title = "Squares With Three Sides"
 
+    @staticmethod
     def solve_part_1() -> str:
         with open('PuzzleInputs/03.txt') as puzzle_input:
             input_lines: list[str] = puzzle_input.read().splitlines()
@@ -19,6 +20,7 @@ class Day03Solver(Solver):
         return str(possible_triangle_count)
 
 
+    @staticmethod
     def solve_part_2() -> str:
         with open('PuzzleInputs/03.txt') as puzzle_input:
             input_lines: list[str] = puzzle_input.read().splitlines()
