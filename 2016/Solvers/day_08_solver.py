@@ -6,10 +6,7 @@ class Day08Solver(Solver):
     puzzle_title = "Two-Factor Authentication"
 
     @staticmethod
-    def solve_part_1() -> str:
-        with open('PuzzleInputs/08.txt') as puzzle_input:
-            input_lines: list[str] = puzzle_input.read().splitlines()
-
+    def render_screen(input_lines: list[str]) -> list[list[bool]]:
         ROWS: Final[int] = 6
         COLUMNS: Final[int] = 50
 
@@ -57,10 +54,52 @@ class Day08Solver(Solver):
             else:
                 raise RuntimeError("Line did not start with \"rect\" or \"rotate\"")
 
+        return screen
+
+
+    @staticmethod
+    def solve_part_1() -> str:
+        with open('PuzzleInputs/08.txt') as puzzle_input:
+            input_lines: list[str] = puzzle_input.read().splitlines()
+
+        screen: list[list[bool]] = Day08Solver.render_screen(input_lines)
+
         count: int = sum([column.count(True) for column in screen])
         return str(count)
 
 
     @staticmethod
     def solve_part_2() -> str:
-        return "0"
+        # To solve this method in a way that could have the result included in the results table
+        # would require some kind of OCR. This would be a huge amount of work and is therefore
+        # clearly outside the scope of this puzzle. The intended solution is obviously to create a
+        # way to render the contents of the screen, which can then be read and interpreted by human
+        # eyes to obtain the solution. Hence what follows it only code that can print the screen to
+        # the console. I will make no attempt to read this value into the results table.
+
+        # Set this to true to print the screen.
+        PRINT_SCREEN: Final[bool] = False
+
+        if (PRINT_SCREEN):
+            with open('PuzzleInputs/08.txt') as puzzle_input:
+                input_lines: list[str] = puzzle_input.read().splitlines()
+            screen: list[list[bool]] = Day08Solver.render_screen(input_lines)
+
+            ROWS: Final[int] = 6
+            COLUMNS: Final[int] = 50
+            for j in range(ROWS):
+                for i in range(COLUMNS):
+                    if (screen[i][j]):
+                        print("█", end="")
+                    else:
+                        print(" ", end="")
+
+                    # Each tile is 5 spaces wide, so add a space after every fifth tile (which
+                    # occurs whenever the modulo of the column is 4)
+                    if (i % 5 == 4):
+                        print(" ", end="")
+                print("", end="\n")
+
+            return "Screen printed"
+        else:
+            return "SEE CODE COMMENT"
