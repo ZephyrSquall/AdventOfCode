@@ -10,6 +10,7 @@ from Solvers.day_04_solver import Day04Solver
 from Solvers.day_05_solver import Day05Solver
 from Solvers.day_06_solver import Day06Solver
 from Solvers.day_07_solver import Day07Solver
+from Solvers.day_08_solver import Day08Solver
 
 # This if statement is required for proper typing information (by default sys.stdout is given the
 # broader type "TextIO" which doesn't have the reconfigure method).
@@ -30,6 +31,7 @@ solvers: dict[int, type[Solver]] = {
     5: Day05Solver,
     6: Day06Solver,
     7: Day07Solver,
+    8: Day08Solver,
 }
 
 class MaxLengths:
