@@ -10,4 +10,7 @@ fn main() {
     println!("Day 03:");
     println!("{}", solver::day_03::solve_part_1());
     println!("{}", solver::day_03::solve_part_2());
+    println!("Day 04:");
+    println!("{}", solver::day_04::solve_part_1());
+    println!("{}", solver::day_04::solve_part_2());
 }
