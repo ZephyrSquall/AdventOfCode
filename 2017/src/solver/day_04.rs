@@ -1,17 +1,12 @@
 use itertools::Itertools;
-use std::fs;
+use std::fmt::Display;
 
-pub fn solve_part_1() -> i32 {
-    solve(false)
-}
+pub const SOLVER_04: super::Solver = super::Solver {
+    solve_part_1: |input| solve(input, false),
+    solve_part_2: |input| solve(input, true),
+};
 
-pub fn solve_part_2() -> i32 {
-    solve(true)
-}
-
-fn solve(test_anagrams: bool) -> i32 {
-    let file_path = "puzzle_inputs/04.txt";
-    let input = fs::read_to_string(file_path).expect("Error reading file");
+fn solve(input: &str, test_anagrams: bool) -> Box<dyn Display> {
     let mut valid_passphrase_count = 0;
 
     for line in input.lines() {
@@ -28,7 +23,7 @@ fn solve(test_anagrams: bool) -> i32 {
         }
     }
 
-    valid_passphrase_count
+    Box::from(valid_passphrase_count)
 }
 
 fn word_match(word1: &str, word2: &str, test_anagrams: bool) -> bool {

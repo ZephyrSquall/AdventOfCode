@@ -1,7 +1,6 @@
-use crate::solver::Solver;
 use itertools::Itertools;
 
-pub const SOLVER_02: Solver = Solver {
+pub const SOLVER_02: super::Solver = super::Solver {
     solve_part_1: |input| {
         let mut checksum = 0;
 
