@@ -1,6 +1,9 @@
 use itertools::Itertools;
 
 pub const SOLVER_02: super::Solver = super::Solver {
+    day: 2,
+    title: "Corruption Checksum",
+    
     solve_part_1: |input| {
         let mut checksum = 0;
 

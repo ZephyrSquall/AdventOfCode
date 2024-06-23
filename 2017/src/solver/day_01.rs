@@ -1,6 +1,9 @@
 use atoi::ascii_to_digit;
 
 pub const SOLVER_01: super::Solver = super::Solver {
+    day: 1,
+    title: "Inverse Captcha",
+
     solve_part_1: |input| {
         let input = input.as_bytes();
         let mut checksum: i32 = 0;

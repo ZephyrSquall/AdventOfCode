@@ -10,24 +10,13 @@ fn main() {
         solver::day_04::SOLVER_04,
     ];
 
-    let file_path = "puzzle_inputs/01.txt";
-    let input = fs::read_to_string(file_path).expect("Error reading file");
-    println!("Day 01:");
-    println!("{}", (solvers[0].solve_part_1)(&input));
-    println!("{}", (solvers[0].solve_part_2)(&input));
-    println!("Day 02:");
-    let file_path = "puzzle_inputs/02.txt";
-    let input = fs::read_to_string(file_path).expect("Error reading file");
-    println!("{}", (solvers[1].solve_part_1)(&input));
-    println!("{}", (solvers[1].solve_part_2)(&input));
-    println!("Day 03:");
-    let file_path = "puzzle_inputs/03.txt";
-    let input = fs::read_to_string(file_path).expect("Error reading file");
-    println!("{}", (solvers[2].solve_part_1)(&input));
-    println!("{}", (solvers[2].solve_part_2)(&input));
-    println!("Day 04:");
-    let file_path = "puzzle_inputs/04.txt";
-    let input = fs::read_to_string(file_path).expect("Error reading file");
-    println!("{}", (solvers[3].solve_part_1)(&input));
-    println!("{}", (solvers[3].solve_part_2)(&input));
+    for solver in &solvers {
+        // "{:02}" left-pads the day number with a 0 if needed so the width of the number is two.
+        let file_path = format!("puzzle_inputs/{:02}.txt", solver.day);
+        let input = fs::read_to_string(&file_path).expect("Error reading file");
+        
+        println!("Day {}", solver.day);
+        println!("{}", (solver.solve_part_1)(&input));
+        println!("{}", (solver.solve_part_2)(&input));
+    }
 }

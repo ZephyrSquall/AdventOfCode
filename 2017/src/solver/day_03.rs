@@ -1,4 +1,7 @@
 pub const SOLVER_03: super::Solver = super::Solver {
+    day: 3,
+    title: "Spiral Memory",
+    
     solve_part_1: |input| {
         let input = input.parse::<i32>().expect("Error parsing number");
 
