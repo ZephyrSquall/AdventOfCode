@@ -1,35 +1,57 @@
-use std::fs;
-use std::fmt::Display;
-use std::time::Instant;
 use crate::solver::SOLVERS;
+use std::fs;
+use std::time::Instant;
 
-struct Solution<'a> {
-    day: u8,
-    title: &'a str,
-    solution_1: Box<dyn Display>,
-    solution_2: Box<dyn Display>,
-    time_1: u128,
-    time_2: u128,
+const DAY_TITLE: &str = "Day";
+const PUZZLE_TITLE: &str = "Puzzle";
+const PART_TITLE: &str = "Part";
+const SOLUTION_TITLE: &str = "Solution";
+const TIMING_TITLE: &str = "Time (ms)";
+
+struct MaxLength {
+    day: usize,
+    puzzle: usize,
+    part: usize,
+    solution: usize,
+    timing: usize,
+}
+
+struct Solution {
+    day: String,
+    title: String,
+    solution_1: String,
+    solution_2: String,
+    time_1: String,
+    time_2: String,
 }
 
 pub fn run() {
-    let solutions = run_solvers();
+    let solutions;
+    let max_length;
+    (solutions, max_length) = run_solvers();
 
-    for solution in solutions {
-        println!("Day {}: {}", solution.day, solution.title);
-        println!("{} in {} ns", solution.solution_1, solution.time_1);
-        println!("{} in {} ns", solution.solution_2, solution.time_2);
-    }
+    print_results_table(solutions, max_length);
 }
 
-fn run_solvers() -> Vec<Solution<'static>> {
+fn run_solvers() -> (Vec<Solution>, MaxLength) {
     let mut solutions = Vec::new();
+    let mut max_length = MaxLength {
+        day: DAY_TITLE.len(),
+        puzzle: PUZZLE_TITLE.len(),
+        part: PART_TITLE.len(),
+        solution: SOLUTION_TITLE.len(),
+        timing: TIMING_TITLE.len(),
+    };
 
     for solver in SOLVERS {
-        // "{:02}" left-pads the day number with a 0 if needed so the width of the number is two.
+        // Fetch the input strings for each puzzle from the text files under puzzle_inputs.
+        // "{:02}" left-pads the day number with a 0 if needed so the width of the number is two
+        // (text files for the first 9 days are prefixed with a 0 e.g. "01.txt" so it's sorted
+        // properly by file systems).
         let file_path = format!("puzzle_inputs/{:02}.txt", solver.day);
         let input = fs::read_to_string(&file_path).expect("Error reading file");
 
+        // Run the solvers while measuring their execution time.
         let start = Instant::now();
         let solution_1 = (solver.solve_part_1)(&input);
         let duration = start.elapsed();
@@ -38,19 +60,135 @@ fn run_solvers() -> Vec<Solution<'static>> {
         let start = Instant::now();
         let solution_2 = (solver.solve_part_2)(&input);
         let duration = start.elapsed();
-        let time_2 = duration.as_nanos();
+        let time_2 = duration.as_micros();
 
+        // Pad time strings with zeroes until they are at least four characters long, then insert a
+        // decimal point three characters from the end of the string. This way the number of
+        // microseconds is converted to a display of milliseconds with a fractional part.
+        let mut time_1 = format!("{time_1:04}");
+        time_1.insert(time_1.len() - 3, '.');
+
+        let mut time_2 = format!("{time_2:04}");
+        time_2.insert(time_2.len() - 3, '.');
+
+        // Store the string representation of all information to be printed in the results table.
         let solution = Solution {
-            day: solver.day,
-            title: solver.title,
-            solution_1,
-            solution_2,
+            day: solver.day.to_string(),
+            title: solver.title.to_string(),
+            solution_1: solution_1.to_string(),
+            solution_2: solution_2.to_string(),
             time_1,
             time_2,
         };
 
-        solutions.push( solution);
+        // Check if the length of any data to be displayed exceeds the current maximum length. If
+        // so, update the maximum length.
+        if solution.day.len() > max_length.day {
+            max_length.day = solution.day.len()
+        }
+        if solution.title.len() > max_length.puzzle {
+            max_length.puzzle = solution.title.len()
+        }
+        if solution.solution_1.len() > max_length.solution {
+            max_length.solution = solution.solution_1.len()
+        }
+        if solution.solution_2.len() > max_length.solution {
+            max_length.solution = solution.solution_2.len()
+        }
+        if solution.time_1.len() > max_length.timing {
+            max_length.timing = solution.time_1.len()
+        }
+        if solution.time_2.len() > max_length.timing {
+            max_length.timing = solution.time_2.len()
+        }
+
+        solutions.push(solution);
     }
 
-    solutions
+    (solutions, max_length)
+}
+
+fn print_results_table(solutions: Vec<Solution>, max_length: MaxLength) {
+    // Generate table header
+    println!(
+        "╔═{empty:═<day_width$}═╤═{empty:═<puzzle_width$}═╤═{empty:═<part_width$}═╤═{empty:═<solution_width$}═╤═{empty:═<timing_width$}═╗",
+        empty = "",
+        day_width = max_length.day,
+        puzzle_width = max_length.puzzle,
+        part_width = max_length.part,
+        solution_width = max_length.solution,
+        timing_width = max_length.timing
+    );
+    println!(
+        "║ {DAY_TITLE:day_width$} │ {PUZZLE_TITLE:puzzle_width$} │ {PART_TITLE:part_width$} │ {SOLUTION_TITLE:solution_width$} │ {TIMING_TITLE:timing_width$} ║",
+        day_width = max_length.day,
+        puzzle_width = max_length.puzzle,
+        part_width = max_length.part,
+        solution_width = max_length.solution,
+        timing_width = max_length.timing
+    );
+    println!(
+        "╟─{empty:─<day_width$}─┼─{empty:─<puzzle_width$}─┼─{empty:─<part_width$}─┼─{empty:─<solution_width$}─┼─{empty:─<timing_width$}─╢",
+        empty = "",
+        day_width = max_length.day,
+        puzzle_width = max_length.puzzle,
+        part_width = max_length.part,
+        solution_width = max_length.solution,
+        timing_width = max_length.timing
+    );
+
+    // Generate rows for each solution
+    let mut is_first_row = true;
+    for solution in solutions {
+        // Skip the empty row if it's the first row.
+        if is_first_row {
+            is_first_row = false;
+        } else {
+            println!(
+                "║ {empty:day_width$} │ {empty:puzzle_width$} │ {empty:part_width$} │ {empty:solution_width$} │ {empty:timing_width$} ║",
+                empty = "",
+                day_width = max_length.day,
+                puzzle_width = max_length.puzzle,
+                part_width = max_length.part,
+                solution_width = max_length.solution,
+                timing_width = max_length.timing
+            );
+        }
+        println!(
+            "║ {day:>day_width$} │ {puzzle:puzzle_width$} │ {part:>part_width$} │ {solution:>solution_width$} │ {timing:>timing_width$} ║",
+            day = solution.day,
+            puzzle = solution.title,
+            part = "1",
+            solution = solution.solution_1,
+            timing = solution.time_1,
+            day_width = max_length.day,
+            puzzle_width = max_length.puzzle,
+            part_width = max_length.part,
+            solution_width = max_length.solution,
+            timing_width = max_length.timing
+        );
+        println!(
+            "║ {empty:day_width$} │ {empty:puzzle_width$} │ {part:>part_width$} │ {solution:>solution_width$} │ {timing:>timing_width$} ║",
+            empty = "",
+            part = "2",
+            solution = solution.solution_2,
+            timing = solution.time_2,
+            day_width = max_length.day,
+            puzzle_width = max_length.puzzle,
+            part_width = max_length.part,
+            solution_width = max_length.solution,
+            timing_width = max_length.timing
+        );
+    }
+
+    // Generate table footer
+    println!(
+        "╚═{empty:═<day_width$}═╧═{empty:═<puzzle_width$}═╧═{empty:═<part_width$}═╧═{empty:═<solution_width$}═╧═{empty:═<timing_width$}═╝",
+        empty = "",
+        day_width = max_length.day,
+        puzzle_width = max_length.puzzle,
+        part_width = max_length.part,
+        solution_width = max_length.solution,
+        timing_width = max_length.timing
+    );
 }
