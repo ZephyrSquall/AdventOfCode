@@ -1,6 +1,6 @@
 use itertools::Itertools;
 
-pub const SOLVER_02: super::Solver = super::Solver {
+pub const SOLVER: super::Solver = super::Solver {
     day: 2,
     title: "Corruption Checksum",
     

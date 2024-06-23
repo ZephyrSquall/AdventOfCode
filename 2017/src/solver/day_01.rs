@@ -1,6 +1,6 @@
 use atoi::ascii_to_digit;
 
-pub const SOLVER_01: super::Solver = super::Solver {
+pub const SOLVER: super::Solver = super::Solver {
     day: 1,
     title: "Inverse Captcha",
 

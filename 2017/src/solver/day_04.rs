@@ -1,10 +1,10 @@
 use itertools::Itertools;
 use std::fmt::Display;
 
-pub const SOLVER_04: super::Solver = super::Solver {
+pub const SOLVER: super::Solver = super::Solver {
     day: 4,
     title: "High-Entropy Passphrases",
-    
+
     solve_part_1: |input| solve(input, false),
     solve_part_2: |input| solve(input, true),
 };

@@ -1,4 +1,4 @@
-pub const SOLVER_03: super::Solver = super::Solver {
+pub const SOLVER: super::Solver = super::Solver {
     day: 3,
     title: "Spiral Memory",
     
