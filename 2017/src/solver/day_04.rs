@@ -1,7 +1,7 @@
+use super::{Solution, Solver};
 use itertools::Itertools;
-use std::fmt::Display;
 
-pub const SOLVER: super::Solver = super::Solver {
+pub const SOLVER: Solver = Solver {
     day: 4,
     title: "High-Entropy Passphrases",
 
@@ -9,7 +9,7 @@ pub const SOLVER: super::Solver = super::Solver {
     solve_part_2: |input| solve(input, true),
 };
 
-fn solve(input: &str, test_anagrams: bool) -> Box<dyn Display> {
+fn solve(input: &str, test_anagrams: bool) -> Solution {
     let mut valid_passphrase_count = 0;
 
     for line in input.lines() {
@@ -26,7 +26,7 @@ fn solve(input: &str, test_anagrams: bool) -> Box<dyn Display> {
         }
     }
 
-    Box::from(valid_passphrase_count)
+    Solution::I32(valid_passphrase_count)
 }
 
 fn word_match(word1: &str, word2: &str, test_anagrams: bool) -> bool {

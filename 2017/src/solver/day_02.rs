@@ -1,9 +1,10 @@
+use super::{Solution, Solver};
 use itertools::Itertools;
 
-pub const SOLVER: super::Solver = super::Solver {
+pub const SOLVER: Solver = Solver {
     day: 2,
     title: "Corruption Checksum",
-    
+
     solve_part_1: |input| {
         let mut checksum = 0;
 
@@ -24,7 +25,7 @@ pub const SOLVER: super::Solver = super::Solver {
             checksum += largest_int - smallest_int;
         }
 
-        Box::from(checksum)
+        Solution::I32(checksum)
     },
 
     solve_part_2: |input| {
@@ -45,6 +46,6 @@ pub const SOLVER: super::Solver = super::Solver {
             }
         }
 
-        Box::from(checksum)
+        Solution::I32(checksum)
     },
 };

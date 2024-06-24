@@ -1,7 +1,9 @@
-pub const SOLVER: super::Solver = super::Solver {
+use super::{Solution, Solver};
+
+pub const SOLVER: Solver = Solver {
     day: 3,
     title: "Spiral Memory",
-    
+
     solve_part_1: |input| {
         let input = input.parse::<i32>().expect("Error parsing number");
 
@@ -36,7 +38,7 @@ pub const SOLVER: super::Solver = super::Solver {
             square_number += 1;
             manhattan_distance += if is_stepping_down { -1 } else { 1 };
             if square_number == input {
-                return Box::from(manhattan_distance);
+                return Solution::I32(manhattan_distance);
             }
 
             // Test if at a corner of the loop.
@@ -51,7 +53,7 @@ pub const SOLVER: super::Solver = super::Solver {
                     square_number += 1;
                     manhattan_distance += 1;
                     if square_number == input {
-                        return Box::from(manhattan_distance);
+                        return Solution::I32(manhattan_distance);
                     }
                 }
             // Test if at the middle of an edge of the loop.
@@ -157,7 +159,7 @@ pub const SOLVER: super::Solver = super::Solver {
             spiral.push(next_number);
 
             if spiral[spiral.len() - 1] > input {
-                return Box::from(spiral[spiral.len() - 1]);
+                return Solution::I32(spiral[spiral.len() - 1]);
             }
         }
     },

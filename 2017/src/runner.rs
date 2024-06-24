@@ -16,7 +16,7 @@ struct MaxLength {
     timing: usize,
 }
 
-struct Solution {
+struct SolutionFormat {
     day: String,
     title: String,
     solution_1: String,
@@ -26,15 +26,15 @@ struct Solution {
 }
 
 pub fn run() {
-    let solutions;
+    let solution_formats;
     let max_length;
-    (solutions, max_length) = run_solvers();
+    (solution_formats, max_length) = run_solvers();
 
-    print_results_table(solutions, max_length);
+    print_results_table(solution_formats, max_length);
 }
 
-fn run_solvers() -> (Vec<Solution>, MaxLength) {
-    let mut solutions = Vec::new();
+fn run_solvers() -> (Vec<SolutionFormat>, MaxLength) {
+    let mut solution_formats = Vec::with_capacity(SOLVERS.len());
     let mut max_length = MaxLength {
         day: DAY_TITLE.len(),
         puzzle: PUZZLE_TITLE.len(),
@@ -72,7 +72,7 @@ fn run_solvers() -> (Vec<Solution>, MaxLength) {
         time_2.insert(time_2.len() - 3, '.');
 
         // Store the string representation of all information to be printed in the results table.
-        let solution = Solution {
+        let solution_format = SolutionFormat {
             day: solver.day.to_string(),
             title: solver.title.to_string(),
             solution_1: solution_1.to_string(),
@@ -83,32 +83,32 @@ fn run_solvers() -> (Vec<Solution>, MaxLength) {
 
         // Check if the length of any data to be displayed exceeds the current maximum length. If
         // so, update the maximum length.
-        if solution.day.len() > max_length.day {
-            max_length.day = solution.day.len()
+        if solution_format.day.len() > max_length.day {
+            max_length.day = solution_format.day.len()
         }
-        if solution.title.len() > max_length.puzzle {
-            max_length.puzzle = solution.title.len()
+        if solution_format.title.len() > max_length.puzzle {
+            max_length.puzzle = solution_format.title.len()
         }
-        if solution.solution_1.len() > max_length.solution {
-            max_length.solution = solution.solution_1.len()
+        if solution_format.solution_1.len() > max_length.solution {
+            max_length.solution = solution_format.solution_1.len()
         }
-        if solution.solution_2.len() > max_length.solution {
-            max_length.solution = solution.solution_2.len()
+        if solution_format.solution_2.len() > max_length.solution {
+            max_length.solution = solution_format.solution_2.len()
         }
-        if solution.time_1.len() > max_length.timing {
-            max_length.timing = solution.time_1.len()
+        if solution_format.time_1.len() > max_length.timing {
+            max_length.timing = solution_format.time_1.len()
         }
-        if solution.time_2.len() > max_length.timing {
-            max_length.timing = solution.time_2.len()
+        if solution_format.time_2.len() > max_length.timing {
+            max_length.timing = solution_format.time_2.len()
         }
 
-        solutions.push(solution);
+        solution_formats.push(solution_format);
     }
 
-    (solutions, max_length)
+    (solution_formats, max_length)
 }
 
-fn print_results_table(solutions: Vec<Solution>, max_length: MaxLength) {
+fn print_results_table(solution_formats: Vec<SolutionFormat>, max_length: MaxLength) {
     // Generate table header
     println!(
         "╔═{empty:═<day_width$}═╤═{empty:═<puzzle_width$}═╤═{empty:═<part_width$}═╤═{empty:═<solution_width$}═╤═{empty:═<timing_width$}═╗",
@@ -137,9 +137,9 @@ fn print_results_table(solutions: Vec<Solution>, max_length: MaxLength) {
         timing_width = max_length.timing
     );
 
-    // Generate rows for each solution
+    // Generate rows for each solution format
     let mut is_first_row = true;
-    for solution in solutions {
+    for solution_format in solution_formats {
         // Skip the empty row if it's the first row.
         if is_first_row {
             is_first_row = false;
@@ -156,11 +156,11 @@ fn print_results_table(solutions: Vec<Solution>, max_length: MaxLength) {
         }
         println!(
             "║ {day:>day_width$} │ {puzzle:puzzle_width$} │ {part:>part_width$} │ {solution:>solution_width$} │ {timing:>timing_width$} ║",
-            day = solution.day,
-            puzzle = solution.title,
+            day = solution_format.day,
+            puzzle = solution_format.title,
             part = "1",
-            solution = solution.solution_1,
-            timing = solution.time_1,
+            solution = solution_format.solution_1,
+            timing = solution_format.time_1,
             day_width = max_length.day,
             puzzle_width = max_length.puzzle,
             part_width = max_length.part,
@@ -171,8 +171,8 @@ fn print_results_table(solutions: Vec<Solution>, max_length: MaxLength) {
             "║ {empty:day_width$} │ {empty:puzzle_width$} │ {part:>part_width$} │ {solution:>solution_width$} │ {timing:>timing_width$} ║",
             empty = "",
             part = "2",
-            solution = solution.solution_2,
-            timing = solution.time_2,
+            solution = solution_format.solution_2,
+            timing = solution_format.time_2,
             day_width = max_length.day,
             puzzle_width = max_length.puzzle,
             part_width = max_length.part,

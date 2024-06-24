@@ -1,6 +1,7 @@
+use super::{Solution, Solver};
 use atoi::ascii_to_digit;
 
-pub const SOLVER: super::Solver = super::Solver {
+pub const SOLVER: Solver = Solver {
     day: 1,
     title: "Inverse Captcha",
 
@@ -23,7 +24,7 @@ pub const SOLVER: super::Solver = super::Solver {
             checksum += digit;
         }
 
-        Box::from(checksum)
+        Solution::I32(checksum)
     },
     solve_part_2: |input| {
         let input = input.as_bytes();
@@ -43,6 +44,6 @@ pub const SOLVER: super::Solver = super::Solver {
         // Double the checksum to account for the skipped second half of the inputs.
         checksum *= 2;
 
-        Box::from(checksum)
+        Solution::I32(checksum)
     },
 };
