@@ -4,12 +4,14 @@ pub mod day_01;
 pub mod day_02;
 pub mod day_03;
 pub mod day_04;
+pub mod day_05;
 
-pub const SOLVERS: [Solver; 4] = [
+pub const SOLVERS: [Solver; 5] = [
     day_01::SOLVER,
     day_02::SOLVER,
     day_03::SOLVER,
     day_04::SOLVER,
+    day_05::SOLVER,
 ];
 
 pub struct Solver<'a> {
@@ -25,7 +27,7 @@ pub struct Solver<'a> {
 pub enum Solution {
     // U8(u8),
     // U16(u16),
-    // U32(u32),
+    U32(u32),
     // U64(u64),
     // U128(u128),
     // USize(usize),
@@ -43,7 +45,7 @@ impl fmt::Display for Solution {
         match self {
             // Solution::U8(solution) => solution.fmt(f),
             // Solution::U16(solution) => solution.fmt(f),
-            // Solution::U32(solution) => solution.fmt(f),
+            Solution::U32(solution) => solution.fmt(f),
             // Solution::U64(solution) => solution.fmt(f),
             // Solution::U128(solution) => solution.fmt(f),
             // Solution::USize(solution) => solution.fmt(f),
