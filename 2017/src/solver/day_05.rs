@@ -4,8 +4,8 @@ pub const SOLVER: Solver = Solver {
     day: 5,
     title: "A Maze of Twisty Trampolines, All Alike",
 
-    solve_part_1: |input| solve(input, false),
-    solve_part_2: |input| solve(input, true),
+    solve_1: |input| solve(input, false),
+    solve_2: |input| solve(input, true),
 };
 
 fn solve(input: &str, strange_jumps: bool) -> Solution {
@@ -40,28 +40,32 @@ mod test {
     use super::*;
 
     #[test]
-    fn part1_example1() {
-        let result = (SOLVER.solve_part_1)(
-            "\
+    fn example1_1() {
+        assert_eq!(
+            (SOLVER.solve_1)(
+                "\
 0
 3
 0
 1
 -3",
+            ),
+            Solution::U8(5)
         );
-        assert_eq!(Solution::U32(5), result)
     }
 
     #[test]
-    fn part2_example1() {
-        let result = (SOLVER.solve_part_2)(
-            "\
+    fn example2_1() {
+        assert_eq!(
+            (SOLVER.solve_2)(
+                "\
 0
 3
 0
 1
 -3",
+            ),
+            Solution::U8(10)
         );
-        assert_eq!(Solution::U32(10), result)
     }
 }

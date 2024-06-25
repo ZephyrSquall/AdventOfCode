@@ -5,14 +5,14 @@ pub const SOLVER: Solver = Solver {
     day: 2,
     title: "Corruption Checksum",
 
-    solve_part_1: |input| {
+    solve_1: |input| {
         let mut checksum = 0;
 
         for line in input.lines() {
             let mut largest_int = i32::MIN;
             let mut smallest_int = i32::MAX;
 
-            for number in line.split('\t') {
+            for number in line.split_whitespace() {
                 let number = number.parse::<i32>().expect("Error parsing number");
                 if number > largest_int {
                     largest_int = number;
@@ -28,12 +28,12 @@ pub const SOLVER: Solver = Solver {
         Solution::I32(checksum)
     },
 
-    solve_part_2: |input| {
+    solve_2: |input| {
         let mut checksum = 0;
 
         for line in input.lines() {
             let numbers_iter = line
-                .split('\t')
+                .split_whitespace()
                 .map(|string| string.parse::<i32>().expect("Error parsing number"));
 
             // .permutations gives every pair of numbers. Both orderings of each pair of numbers are
@@ -49,3 +49,34 @@ pub const SOLVER: Solver = Solver {
         Solution::I32(checksum)
     },
 };
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    fn example1_1() {
+        assert_eq!(
+            (SOLVER.solve_1)(
+                "\
+5 1 9 5
+7 5 3
+2 4 6 8"
+            ),
+            Solution::U8(18)
+        )
+    }
+
+    #[test]
+    fn example2_1() {
+        assert_eq!(
+            (SOLVER.solve_2)(
+                "\
+5 9 2 8
+9 4 7 3
+3 8 6 5"
+            ),
+            Solution::U8(9)
+        )
+    }
+}

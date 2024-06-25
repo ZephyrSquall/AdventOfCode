@@ -53,12 +53,12 @@ fn run_solvers() -> (Vec<SolutionFormat>, MaxLength) {
 
         // Run the solvers while measuring their execution time.
         let start = Instant::now();
-        let solution_1 = (solver.solve_part_1)(&input);
+        let solution_1 = (solver.solve_1)(&input);
         let duration = start.elapsed();
         let time_1 = duration.as_micros();
 
         let start = Instant::now();
-        let solution_2 = (solver.solve_part_2)(&input);
+        let solution_2 = (solver.solve_2)(&input);
         let duration = start.elapsed();
         let time_2 = duration.as_micros();
 

@@ -5,12 +5,12 @@ pub const SOLVER: Solver = Solver {
     day: 4,
     title: "High-Entropy Passphrases",
 
-    solve_part_1: |input| solve(input, false),
-    solve_part_2: |input| solve(input, true),
+    solve_1: |input| solve(input, false),
+    solve_2: |input| solve(input, true),
 };
 
 fn solve(input: &str, test_anagrams: bool) -> Solution {
-    let mut valid_passphrase_count = 0;
+    let mut valid_passphrase_count: u32 = 0;
 
     for line in input.lines() {
         // Count every passphrase.
@@ -26,7 +26,7 @@ fn solve(input: &str, test_anagrams: bool) -> Solution {
         }
     }
 
-    Solution::I32(valid_passphrase_count)
+    Solution::U32(valid_passphrase_count)
 }
 
 fn word_match(word1: &str, word2: &str, test_anagrams: bool) -> bool {
@@ -40,5 +40,47 @@ fn word_match(word1: &str, word2: &str, test_anagrams: bool) -> bool {
             .eq(word2.chars().sorted_unstable())
     } else {
         word1 == word2
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    fn example1_1() {
+        assert_eq!((SOLVER.solve_1)("aa bb cc dd ee"), Solution::U8(1))
+    }
+    #[test]
+    fn example1_2() {
+        assert_eq!((SOLVER.solve_1)("aa bb cc dd aa"), Solution::U8(0))
+    }
+    #[test]
+    fn example1_3() {
+        assert_eq!((SOLVER.solve_1)("aa bb cc dd aaa"), Solution::U8(1))
+    }
+
+    #[test]
+    fn example2_1() {
+        assert_eq!((SOLVER.solve_2)("abcde fghij"), Solution::U8(1))
+    }
+    #[test]
+    fn example2_2() {
+        assert_eq!((SOLVER.solve_2)("abcde xyz ecdab"), Solution::U8(0))
+    }
+    #[test]
+    fn example2_3() {
+        assert_eq!((SOLVER.solve_2)("a ab abc abd abf abj"), Solution::U8(1))
+    }
+    #[test]
+    fn example2_4() {
+        assert_eq!(
+            (SOLVER.solve_2)("iiii oiii ooii oooi oooo"),
+            Solution::U8(1)
+        )
+    }
+    #[test]
+    fn example2_5() {
+        assert_eq!((SOLVER.solve_2)("oiii ioii iioi iiio"), Solution::U8(0))
     }
 }

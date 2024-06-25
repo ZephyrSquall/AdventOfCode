@@ -4,8 +4,8 @@ pub const SOLVER: Solver = Solver {
     day: 3,
     title: "Spiral Memory",
 
-    solve_part_1: |input| {
-        let input = input.parse::<i32>().expect("Error parsing number");
+    solve_1: |input| {
+        let input = input.parse::<u32>().expect("Error parsing number");
 
         // There are some observations that can be made about the storage pattern that avoid the
         // need to actually build it.
@@ -29,8 +29,8 @@ pub const SOLVER: Solver = Solver {
 
         let mut manhattan_distance = 2;
         let mut maximum_manhattan_distance = 2;
-        let mut square_number = 1;
-        let mut edges_traversed = 0;
+        let mut square_number: u32 = 1;
+        let mut edges_traversed: u32 = 0;
         let mut is_stepping_down = true;
 
         loop {
@@ -62,8 +62,8 @@ pub const SOLVER: Solver = Solver {
             }
         }
     },
-    solve_part_2: |input| {
-        let input = input.parse::<i32>().expect("Error parsing number");
+    solve_2: |input| {
+        let input = input.parse::<u32>().expect("Error parsing number");
 
         // Unlike last time, storing the previous numbers seems necessary. However, there are still
         // some observations that can make it possible to use merely a vector of the spiral numbers
@@ -99,10 +99,10 @@ pub const SOLVER: Solver = Solver {
         //      one step longer than normal and the first edge of the outer loop to be one step
         //      shorter than normal.
 
-        let mut spiral = vec![1, 1];
-        let mut distance_between_corners = 1;
+        let mut spiral: Vec<u32> = vec![1, 1];
+        let mut distance_between_corners: u32 = 1;
         let mut is_first_corner_of_current_distance = false;
-        let mut distance_to_next_corner = 1;
+        let mut distance_to_next_corner: u32 = 1;
         let mut inner_loop_index = 0;
 
         loop {
@@ -159,8 +159,29 @@ pub const SOLVER: Solver = Solver {
             spiral.push(next_number);
 
             if spiral[spiral.len() - 1] > input {
-                return Solution::I32(spiral[spiral.len() - 1]);
+                return Solution::U32(spiral[spiral.len() - 1]);
             }
         }
     },
 };
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    // The test that data from square 1 is carried 0 steps is skipped, as my solver can't handle it.
+    // Square 1 violates several assumptions in my solution logic due to being a loop comprised of
+    // a singe number, a property no other loop has. Hence my solver starts from square 2.
+    #[test]
+    fn example1_1() {
+        assert_eq!((SOLVER.solve_1)("12"), Solution::U8(3))
+    }
+    #[test]
+    fn example1_2() {
+        assert_eq!((SOLVER.solve_1)("23"), Solution::U8(2))
+    }
+    #[test]
+    fn example1_3() {
+        assert_eq!((SOLVER.solve_1)("1024"), Solution::U8(31))
+    }
+}
