@@ -5,13 +5,15 @@ pub mod day_02;
 pub mod day_03;
 pub mod day_04;
 pub mod day_05;
+pub mod day_06;
 
-pub const SOLVERS: [Solver; 5] = [
+pub const SOLVERS: [Solver; 6] = [
     day_01::SOLVER,
     day_02::SOLVER,
     day_03::SOLVER,
     day_04::SOLVER,
     day_05::SOLVER,
+    day_06::SOLVER,
 ];
 
 pub struct Solver<'a> {
