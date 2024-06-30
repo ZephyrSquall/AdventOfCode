@@ -6,14 +6,16 @@ pub mod day_03;
 pub mod day_04;
 pub mod day_05;
 pub mod day_06;
+pub mod day_07;
 
-pub const SOLVERS: [Solver; 6] = [
+pub const SOLVERS: [Solver; 7] = [
     day_01::SOLVER,
     day_02::SOLVER,
     day_03::SOLVER,
     day_04::SOLVER,
     day_05::SOLVER,
     day_06::SOLVER,
+    day_07::SOLVER,
 ];
 
 pub struct Solver<'a> {
@@ -27,7 +29,7 @@ pub struct Solver<'a> {
 // future solvers.
 #[allow(dead_code)]
 #[derive(Debug)]
-pub enum Solution {
+pub enum Solution<'a> {
     U8(u8),
     U16(u16),
     U32(u32),
@@ -40,10 +42,10 @@ pub enum Solution {
     I64(i64),
     I128(i128),
     ISize(isize),
-    String(String),
+    Str(&'a str),
 }
 
-impl fmt::Display for Solution {
+impl<'a> fmt::Display for Solution<'a> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             Solution::U8(solution) => solution.fmt(f),
@@ -58,7 +60,7 @@ impl fmt::Display for Solution {
             Solution::I64(solution) => solution.fmt(f),
             Solution::I128(solution) => solution.fmt(f),
             Solution::ISize(solution) => solution.fmt(f),
-            Solution::String(solution) => solution.fmt(f),
+            Solution::Str(solution) => solution.fmt(f),
         }
     }
 }
@@ -66,7 +68,7 @@ impl fmt::Display for Solution {
 // A solution is only intended to be used for printing in the results table. For this purpose, any
 // solutions that convert to the same string are equal. Note that testing for solution equality is
 // only intended for unit tests; this functionality isn't required by the solver runner.
-impl PartialEq for Solution {
+impl<'a> PartialEq for Solution<'a> {
     fn eq(&self, other: &Self) -> bool {
         self.to_string() == other.to_string()
     }
