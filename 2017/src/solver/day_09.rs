@@ -1,0 +1,95 @@
+use super::{Solution, Solver};
+
+pub const SOLVER: Solver = Solver {
+    day: 9,
+    title: "Stream Processing",
+
+    solve_1: |input| {
+        let mut score: u32 = 0;
+        let mut level: u32 = 0;
+        let mut is_inside_garbage = false;
+
+        let mut iter = input.chars();
+
+        while let Some(char) = iter.next() {
+            if is_inside_garbage {
+                match char {
+                    '>' => {
+                        is_inside_garbage = false;
+                    }
+                    '!' => {
+                        // Call next() on the iterator and ignore the value to skip the next
+                        // character.
+                        iter.next();
+                    }
+                    _ => {}
+                }
+            } else {
+                match char {
+                    '{' => {
+                        level += 1;
+                        score += level;
+                    }
+                    '}' => {
+                        level -= 1;
+                    }
+                    '<' => {
+                        is_inside_garbage = true;
+                    }
+                    _ => {}
+                }
+            }
+        }
+
+        Solution::U32(score)
+    },
+
+    solve_2: |input| Solution::U8(0),
+};
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    fn example1_1() {
+        assert_eq!((SOLVER.solve_1)("{}"), Solution::U8(1))
+    }
+    #[test]
+    fn example1_2() {
+        assert_eq!((SOLVER.solve_1)("{{{}}}"), Solution::U8(6))
+    }
+    #[test]
+    fn example1_3() {
+        assert_eq!((SOLVER.solve_1)("{{},{}}"), Solution::U8(5))
+    }
+    #[test]
+    fn example1_4() {
+        assert_eq!((SOLVER.solve_1)("{{{},{},{{}}}}"), Solution::U8(16))
+    }
+    #[test]
+    fn example1_5() {
+        assert_eq!((SOLVER.solve_1)("{<a>,<a>,<a>,<a>}"), Solution::U8(1))
+    }
+    #[test]
+    fn example1_6() {
+        assert_eq!(
+            (SOLVER.solve_1)("{{<ab>},{<ab>},{<ab>},{<ab>}}"),
+            Solution::U8(9)
+        )
+    }
+    #[test]
+    fn example1_7() {
+        assert_eq!(
+            (SOLVER.solve_1)("{{<!!>},{<!!>},{<!!>},{<!!>}}"),
+            Solution::U8(9)
+        )
+    }
+    #[test]
+    fn example1_8() {
+        assert_eq!(
+            (SOLVER.solve_1)("{{<a!>},{<a!>},{<a!>},{<ab>}}"),
+            Solution::U8(3)
+        )
+    }
+}

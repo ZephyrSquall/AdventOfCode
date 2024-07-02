@@ -8,8 +8,9 @@ pub mod day_05;
 pub mod day_06;
 pub mod day_07;
 pub mod day_08;
+pub mod day_09;
 
-pub const SOLVERS: [Solver; 8] = [
+pub const SOLVERS: [Solver; 9] = [
     day_01::SOLVER,
     day_02::SOLVER,
     day_03::SOLVER,
@@ -18,6 +19,7 @@ pub const SOLVERS: [Solver; 8] = [
     day_06::SOLVER,
     day_07::SOLVER,
     day_08::SOLVER,
+    day_09::SOLVER,
 ];
 
 pub struct Solver<'a> {
