@@ -44,7 +44,34 @@ pub const SOLVER: Solver = Solver {
         Solution::U32(score)
     },
 
-    solve_2: |input| Solution::U8(0),
+    solve_2: |input| {
+        let mut garbage_count: u32 = 0;
+        let mut is_inside_garbage = false;
+
+        let mut iter = input.chars();
+
+        while let Some(char) = iter.next() {
+            if is_inside_garbage {
+                match char {
+                    '>' => {
+                        is_inside_garbage = false;
+                    }
+                    '!' => {
+                        // Call next() on the iterator and ignore the value to skip the next
+                        // character.
+                        iter.next();
+                    }
+                    _ => {
+                        garbage_count += 1;
+                    }
+                }
+            } else if char == '<' {
+                is_inside_garbage = true;
+            }
+        }
+
+        Solution::U32(garbage_count)
+    },
 };
 
 #[cfg(test)]
@@ -91,5 +118,34 @@ mod test {
             (SOLVER.solve_1)("{{<a!>},{<a!>},{<a!>},{<ab>}}"),
             Solution::U8(3)
         )
+    }
+
+    #[test]
+    fn example2_1() {
+        assert_eq!((SOLVER.solve_2)("<>"), Solution::U8(0))
+    }
+    #[test]
+    fn example2_2() {
+        assert_eq!((SOLVER.solve_2)("<random characters>"), Solution::U8(17))
+    }
+    #[test]
+    fn example2_3() {
+        assert_eq!((SOLVER.solve_2)("<<<<>"), Solution::U8(3))
+    }
+    #[test]
+    fn example2_4() {
+        assert_eq!((SOLVER.solve_2)("<{!>}>"), Solution::U8(2))
+    }
+    #[test]
+    fn example2_5() {
+        assert_eq!((SOLVER.solve_2)("<!!>"), Solution::U8(0))
+    }
+    #[test]
+    fn example2_6() {
+        assert_eq!((SOLVER.solve_2)("<!!!>>"), Solution::U8(0))
+    }
+    #[test]
+    fn example2_7() {
+        assert_eq!((SOLVER.solve_2)("<{o\"i!a,<{i<a>"), Solution::U8(10))
     }
 }
