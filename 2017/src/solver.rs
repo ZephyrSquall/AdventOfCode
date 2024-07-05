@@ -49,6 +49,7 @@ pub enum Solution<'a> {
     I128(i128),
     ISize(isize),
     Str(&'a str),
+    String(String),
 }
 
 impl<'a> fmt::Display for Solution<'a> {
@@ -67,6 +68,7 @@ impl<'a> fmt::Display for Solution<'a> {
             Solution::I128(solution) => solution.fmt(f),
             Solution::ISize(solution) => solution.fmt(f),
             Solution::Str(solution) => solution.fmt(f),
+            Solution::String(solution) => solution.fmt(f),
         }
     }
 }
