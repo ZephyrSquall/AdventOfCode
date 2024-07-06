@@ -7,49 +7,78 @@ pub const SOLVER: Solver = Solver {
     title: "Digital Plumber",
 
     solve_1: |input| {
-        let mut pipes: HashMap<u16, Vec<u16>> = HashMap::new();
+        let pipes = get_pipes(input);
 
-        for line in input.lines() {
-            let mut iter = line.split_whitespace();
-            let current_pipe = iter
-                .next()
-                .expect("Line shouldn't be empty")
-                .parse()
-                .expect("Error parsing number");
+        Solution::USize(get_pipe_group(0, &pipes).len())
+    },
 
-            // Consume the "<->".
-            iter.next();
+    solve_2: |input| {
+        let pipes = get_pipes(input);
 
-            let connected_pipes = iter
-                .map(|pipe| {
-                    pipe.trim_end_matches(',')
-                        .parse()
-                        .expect("Error parsing number")
-                })
-                .collect();
+        let mut groups: u16 = 0;
+        let mut found_pipes = Vec::new();
 
-            pipes.insert(current_pipe, connected_pipes);
-        }
-
-        let mut pipe_stack = vec![0];
-        let mut found_pipes = vec![0];
-
-        while let Some(pipe) = pipe_stack.pop() {
-            let connected_pipes = pipes.get(&pipe).expect("Pipe missing from hashmap");
-
-            for connected_pipe in connected_pipes {
-                if !found_pipes.contains(connected_pipe) {
-                    found_pipes.push(*connected_pipe);
-                    pipe_stack.push(*connected_pipe);
-                }
+        // Iterate over every pipe. Check if it's been previously found as a member of a group
+        // (tracked by found_pipes). If not, find all connected pipes and add them to found_pipes,
+        // then increment group count.
+        for starting_pipe in pipes.keys() {
+            if !found_pipes.contains(starting_pipe) {
+                found_pipes.append(&mut get_pipe_group(*starting_pipe, &pipes));
+                groups += 1;
             }
         }
 
-        Solution::USize(found_pipes.len())
+        Solution::U16(groups)
     },
-
-    solve_2: |input| Solution::U8(0),
 };
+
+// Get hashmap of pipe IDs to all pipes its connected to.
+fn get_pipes(input: &str) -> HashMap<u16, Vec<u16>> {
+    let mut pipes: HashMap<u16, Vec<u16>> = HashMap::new();
+
+    for line in input.lines() {
+        let mut iter = line.split_whitespace();
+        let current_pipe = iter
+            .next()
+            .expect("Line shouldn't be empty")
+            .parse()
+            .expect("Error parsing number");
+
+        // Consume the "<->".
+        iter.next();
+
+        let connected_pipes = iter
+            .map(|pipe| {
+                pipe.trim_end_matches(',')
+                    .parse()
+                    .expect("Error parsing number")
+            })
+            .collect();
+
+        pipes.insert(current_pipe, connected_pipes);
+    }
+
+    pipes
+}
+
+// Get vector of all pipes connected to starting_pipe.
+fn get_pipe_group(starting_pipe: u16, pipes: &HashMap<u16, Vec<u16>>) -> Vec<u16> {
+    let mut pipe_stack = vec![starting_pipe];
+    let mut found_pipes = vec![starting_pipe];
+
+    while let Some(pipe) = pipe_stack.pop() {
+        let connected_pipes = pipes.get(&pipe).expect("Pipe missing from hashmap");
+
+        for connected_pipe in connected_pipes {
+            if !found_pipes.contains(connected_pipe) {
+                found_pipes.push(*connected_pipe);
+                pipe_stack.push(*connected_pipe);
+            }
+        }
+    }
+
+    found_pipes
+}
 
 #[cfg(test)]
 mod test {
@@ -69,6 +98,23 @@ mod test {
 6 <-> 4, 5"
             ),
             Solution::U8(6)
+        )
+    }
+
+    #[test]
+    fn example2_1() {
+        assert_eq!(
+            (SOLVER.solve_2)(
+                "\
+0 <-> 2
+1 <-> 1
+2 <-> 0, 3, 4
+3 <-> 2, 4
+4 <-> 2, 3, 6
+5 <-> 6
+6 <-> 4, 5"
+            ),
+            Solution::U8(2)
         )
     }
 }
