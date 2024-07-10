@@ -11,13 +11,38 @@ pub const SOLVER: Solver = Solver {
             'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p',
         ]);
 
-        Solution::String(dance(&mut dancers, input))
+        dance(&mut dancers, input);
+
+        Solution::String(dancers.iter().collect())
     },
 
-    solve_2: |input| Solution::U8(0),
+    solve_2: |input| {
+        // The positions the dancers are in after each dance loops quickly. By identifying the loop
+        // size, most dances can be skipped.
+        let mut dancers = VecDeque::from([
+            'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p',
+        ]);
+        let starting_positions = dancers.clone();
+
+        // Do one initial dance so the while loop condition isn't initially unsatisfied.
+        dance(&mut dancers, input);
+        let mut dance_loop_size = 1;
+
+        while dancers != starting_positions {
+            dance(&mut dancers, input);
+            dance_loop_size += 1;
+        }
+
+        let unique_dances = 1000000000 % dance_loop_size;
+        for _ in 0..unique_dances {
+            dance(&mut dancers, input);
+        }
+
+        Solution::String(dancers.iter().collect())
+    },
 };
 
-fn dance(dancers: &mut VecDeque<char>, input: &str) -> String {
+fn dance(dancers: &mut VecDeque<char>, input: &str) {
     for dance_move in input.split(',') {
         let mut chars = dance_move.chars();
 
@@ -74,8 +99,6 @@ fn dance(dancers: &mut VecDeque<char>, input: &str) -> String {
             _ => panic!("Dance move has invalid instruction"),
         }
     }
-
-    dancers.iter().collect()
 }
 
 #[cfg(test)]
@@ -85,6 +108,15 @@ mod test {
     #[test]
     fn example1_1() {
         let mut dancers = VecDeque::from(['a', 'b', 'c', 'd', 'e']);
-        assert_eq!(dance(&mut dancers, "s1,x3/4,pe/b"), "baedc")
+        dance(&mut dancers, "s1,x3/4,pe/b");
+        assert_eq!(dancers.iter().collect::<String>(), "baedc")
+    }
+
+    #[test]
+    fn example2_1() {
+        let mut dancers = VecDeque::from(['a', 'b', 'c', 'd', 'e']);
+        dance(&mut dancers, "s1,x3/4,pe/b");
+        dance(&mut dancers, "s1,x3/4,pe/b");
+        assert_eq!(dancers.iter().collect::<String>(), "ceadb")
     }
 }
