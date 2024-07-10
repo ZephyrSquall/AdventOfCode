@@ -25,15 +25,13 @@ struct SolutionFormat {
     time_2: String,
 }
 
-pub fn run() {
-    let solution_formats;
-    let max_length;
-    (solution_formats, max_length) = run_solvers();
+pub fn run(config: Vec<u8>) {
+    let (solution_formats, max_length) = run_solvers(config);
 
     print_results_table(solution_formats, max_length);
 }
 
-fn run_solvers() -> (Vec<SolutionFormat>, MaxLength) {
+fn run_solvers(config: Vec<u8>) -> (Vec<SolutionFormat>, MaxLength) {
     let mut solution_formats = Vec::with_capacity(SOLVERS.len());
     let mut max_length = MaxLength {
         day: DAY_TITLE.len(),
@@ -44,65 +42,71 @@ fn run_solvers() -> (Vec<SolutionFormat>, MaxLength) {
     };
 
     for solver in SOLVERS {
-        // Fetch the input strings for each puzzle from the text files under puzzle_inputs.
-        // "{:02}" left-pads the day number with a 0 if needed so the width of the number is two
-        // (text files for the first 9 days are prefixed with a 0 e.g. "01.txt" so it's sorted
-        // properly by file systems).
-        let file_path = format!("puzzle_inputs/{:02}.txt", solver.day);
-        let input = fs::read_to_string(&file_path).expect("Error reading file");
+        // Only run the solver if the config specified to run this solver or the config didn't
+        // specify any particular solvers.
+        if config.is_empty() || config.contains(&solver.day) {
+            // Fetch the input strings for each puzzle from the text files under puzzle_inputs.
+            // "{:02}" left-pads the day number with a 0 if needed so the width of the number is two
+            // (text files for the first 9 days are prefixed with a 0 e.g. "01.txt" so it's sorted
+            // properly by file systems).
+            let file_path = format!("puzzle_inputs/{:02}.txt", solver.day);
+            let input = fs::read_to_string(&file_path).expect("Error reading file");
 
-        // Run the solvers while measuring their execution time.
-        let start = Instant::now();
-        let solution_1 = (solver.solve_1)(&input);
-        let duration = start.elapsed();
-        let time_1 = duration.as_micros();
+            // Run the solvers while measuring their execution time.
+            let start = Instant::now();
+            let solution_1 = (solver.solve_1)(&input);
+            let duration = start.elapsed();
+            let time_1 = duration.as_micros();
 
-        let start = Instant::now();
-        let solution_2 = (solver.solve_2)(&input);
-        let duration = start.elapsed();
-        let time_2 = duration.as_micros();
+            let start = Instant::now();
+            let solution_2 = (solver.solve_2)(&input);
+            let duration = start.elapsed();
+            let time_2 = duration.as_micros();
 
-        // Pad time strings with zeroes until they are at least four characters long, then insert a
-        // decimal point three characters from the end of the string. This way the number of
-        // microseconds is converted to a display of milliseconds with a fractional part.
-        let mut time_1 = format!("{time_1:04}");
-        time_1.insert(time_1.len() - 3, '.');
+            // Pad time strings with zeroes until they are at least four characters long, then
+            // insert a decimal point three characters from the end of the string. This way the
+            // number of microseconds is converted to a display of milliseconds with a fractional
+            // part.
+            let mut time_1 = format!("{time_1:04}");
+            time_1.insert(time_1.len() - 3, '.');
 
-        let mut time_2 = format!("{time_2:04}");
-        time_2.insert(time_2.len() - 3, '.');
+            let mut time_2 = format!("{time_2:04}");
+            time_2.insert(time_2.len() - 3, '.');
 
-        // Store the string representation of all information to be printed in the results table.
-        let solution_format = SolutionFormat {
-            day: solver.day.to_string(),
-            title: solver.title.to_string(),
-            solution_1: solution_1.to_string(),
-            solution_2: solution_2.to_string(),
-            time_1,
-            time_2,
-        };
+            // Store the string representation of all information to be printed in the results
+            // table.
+            let solution_format = SolutionFormat {
+                day: solver.day.to_string(),
+                title: solver.title.to_string(),
+                solution_1: solution_1.to_string(),
+                solution_2: solution_2.to_string(),
+                time_1,
+                time_2,
+            };
 
-        // Check if the length of any data to be displayed exceeds the current maximum length. If
-        // so, update the maximum length.
-        if solution_format.day.len() > max_length.day {
-            max_length.day = solution_format.day.len()
+            // Check if the length of any data to be displayed exceeds the current maximum length.
+            // If so, update the maximum length.
+            if solution_format.day.len() > max_length.day {
+                max_length.day = solution_format.day.len()
+            }
+            if solution_format.title.len() > max_length.puzzle {
+                max_length.puzzle = solution_format.title.len()
+            }
+            if solution_format.solution_1.len() > max_length.solution {
+                max_length.solution = solution_format.solution_1.len()
+            }
+            if solution_format.solution_2.len() > max_length.solution {
+                max_length.solution = solution_format.solution_2.len()
+            }
+            if solution_format.time_1.len() > max_length.timing {
+                max_length.timing = solution_format.time_1.len()
+            }
+            if solution_format.time_2.len() > max_length.timing {
+                max_length.timing = solution_format.time_2.len()
+            }
+
+            solution_formats.push(solution_format);
         }
-        if solution_format.title.len() > max_length.puzzle {
-            max_length.puzzle = solution_format.title.len()
-        }
-        if solution_format.solution_1.len() > max_length.solution {
-            max_length.solution = solution_format.solution_1.len()
-        }
-        if solution_format.solution_2.len() > max_length.solution {
-            max_length.solution = solution_format.solution_2.len()
-        }
-        if solution_format.time_1.len() > max_length.timing {
-            max_length.timing = solution_format.time_1.len()
-        }
-        if solution_format.time_2.len() > max_length.timing {
-            max_length.timing = solution_format.time_2.len()
-        }
-
-        solution_formats.push(solution_format);
     }
 
     (solution_formats, max_length)
