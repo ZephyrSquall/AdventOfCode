@@ -30,7 +30,33 @@ pub const SOLVER: Solver = Solver {
         Solution::U16(circular_buffer[index])
     },
 
-    solve_2: |input| Solution::U8(0),
+    solve_2: |input| {
+        // Due to the way the circular buffer is built, 0 will always remain the first value (any
+        // value that would be inserted before it is instead inserted at the very end of the
+        // buffer). This allows building the circular buffer to be skipped, as only the length of
+        // the buffer and the value immediately after 0 are required.
+        //
+        // Note that due to the way Rust's Vec::insert() method pushes the value at the current
+        // index forward, the very initial push ends up moving 0 to the end of the array. From here
+        // on, if a value were to be inserted immediately after the 0, the index would wrap around
+        // to the front of the array before inserting, thus the 0 will always remain at the end of
+        // the array. This quirk doesn't affect the relative order of any element (the Rust vector
+        // matches the circular buffer as defined in the puzzle after the elements are rotated by
+        // 1), it just means the value after 0 is actually at index 0 because the buffer wraps
+        // around.
+        let steps = input.parse::<u32>().expect("Input should be single number");
+        let mut index = 0;
+        let mut value_after_zero = 0;
+
+        for value in 1..=50000000 {
+            index = (index + steps + 1) % value;
+            if index == 0 {
+                value_after_zero = value;
+            }
+        }
+
+        Solution::U32(value_after_zero)
+    },
 };
 
 #[cfg(test)]
