@@ -1,6 +1,5 @@
-use std::collections::HashMap;
-
 use super::{Solution, Solver};
+use rustc_hash::FxHashMap;
 
 pub const SOLVER: Solver = Solver {
     day: 12,
@@ -33,8 +32,8 @@ pub const SOLVER: Solver = Solver {
 };
 
 // Get hashmap of pipe IDs to all pipes its connected to.
-fn get_pipes(input: &str) -> HashMap<u16, Vec<u16>> {
-    let mut pipes: HashMap<u16, Vec<u16>> = HashMap::new();
+fn get_pipes(input: &str) -> FxHashMap<u16, Vec<u16>> {
+    let mut pipes: FxHashMap<u16, Vec<u16>> = FxHashMap::default();
 
     for line in input.lines() {
         let mut iter = line.split_whitespace();
@@ -62,7 +61,7 @@ fn get_pipes(input: &str) -> HashMap<u16, Vec<u16>> {
 }
 
 // Get vector of all pipes connected to starting_pipe.
-fn get_pipe_group(starting_pipe: u16, pipes: &HashMap<u16, Vec<u16>>) -> Vec<u16> {
+fn get_pipe_group(starting_pipe: u16, pipes: &FxHashMap<u16, Vec<u16>>) -> Vec<u16> {
     let mut pipe_stack = vec![starting_pipe];
     let mut found_pipes = vec![starting_pipe];
 
@@ -98,7 +97,7 @@ mod test {
 6 <-> 4, 5"
             ),
             Solution::U8(6)
-        )
+        );
     }
 
     #[test]
@@ -115,6 +114,6 @@ mod test {
 6 <-> 4, 5"
             ),
             Solution::U8(2)
-        )
+        );
     }
 }

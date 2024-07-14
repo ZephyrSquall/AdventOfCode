@@ -5,15 +5,14 @@ pub const SOLVER: Solver = Solver {
     title: "Dueling Generators",
 
     solve_1: |input| {
-        let (mut generator_a, mut generator_b) = get_generator_starting_values(input);
-
         fn generate_next(value: u64, factor: u64) -> u64 {
-            (value * factor) % 2147483647
+            (value * factor) % 2_147_483_647
         }
 
+        let (mut generator_a, mut generator_b) = get_generator_starting_values(input);
         let mut judge_count = 0;
 
-        for _ in 0..40000000 {
+        for _ in 0..40_000_000 {
             generator_a = generate_next(generator_a, 16807);
             generator_b = generate_next(generator_b, 48271);
 
@@ -30,22 +29,21 @@ pub const SOLVER: Solver = Solver {
     },
 
     solve_2: |input| {
-        let (mut generator_a, mut generator_b) = get_generator_starting_values(input);
-
         // generate_next now takes a closure as a third argument that returns true when the
         // generator's condition is satisfied.
         fn generate_next<F: Fn(u64) -> bool>(mut value: u64, factor: u64, condition: F) -> u64 {
             loop {
-                value = (value * factor) % 2147483647;
+                value = (value * factor) % 2_147_483_647;
                 if condition(value) {
                     return value;
                 }
             }
         }
 
+        let (mut generator_a, mut generator_b) = get_generator_starting_values(input);
         let mut judge_count = 0;
 
-        for _ in 0..5000000 {
+        for _ in 0..5_000_000 {
             generator_a = generate_next(generator_a, 16807, |v| v % 4 == 0);
             generator_b = generate_next(generator_b, 48271, |v| v % 8 == 0);
 
@@ -96,7 +94,7 @@ Generator A starts with 65
 Generator B starts with 8921"
             ),
             Solution::U16(588)
-        )
+        );
     }
 
     #[test]
@@ -108,6 +106,6 @@ Generator A starts with 65
 Generator B starts with 8921"
             ),
             Solution::U16(309)
-        )
+        );
     }
 }

@@ -48,9 +48,8 @@ fn solve(input: &str, get_loop_size: bool) -> Solution {
             // subtract the index of the start of the loop to get the number of steps in the loop.
             if get_loop_size {
                 return Solution::USize(banks_history.len() - loop_start_index);
-            } else {
-                return Solution::USize(banks_history.len());
             }
+            return Solution::USize(banks_history.len());
         }
 
         banks_history.push(banks.clone());
@@ -63,11 +62,11 @@ mod test {
 
     #[test]
     fn example1_1() {
-        assert_eq!((SOLVER.solve_1)("0 2 7 0"), Solution::U8(5))
+        assert_eq!((SOLVER.solve_1)("0 2 7 0"), Solution::U8(5));
     }
 
     #[test]
     fn example2_1() {
-        assert_eq!((SOLVER.solve_2)("0 2 7 0"), Solution::U8(4))
+        assert_eq!((SOLVER.solve_2)("0 2 7 0"), Solution::U8(4));
     }
 }

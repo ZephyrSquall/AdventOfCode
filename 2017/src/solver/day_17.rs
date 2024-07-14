@@ -48,7 +48,7 @@ pub const SOLVER: Solver = Solver {
         let mut index = 0;
         let mut value_after_zero = 0;
 
-        for value in 1..=50000000 {
+        for value in 1..=50_000_000 {
             index = (index + steps + 1) % value;
             if index == 0 {
                 value_after_zero = value;
@@ -65,6 +65,6 @@ mod test {
 
     #[test]
     fn example1_1() {
-        assert_eq!((SOLVER.solve_1)("3"), Solution::U16(638))
+        assert_eq!((SOLVER.solve_1)("3"), Solution::U16(638));
     }
 }

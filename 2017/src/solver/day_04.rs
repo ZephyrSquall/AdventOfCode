@@ -49,38 +49,38 @@ mod test {
 
     #[test]
     fn example1_1() {
-        assert_eq!((SOLVER.solve_1)("aa bb cc dd ee"), Solution::U8(1))
+        assert_eq!((SOLVER.solve_1)("aa bb cc dd ee"), Solution::U8(1));
     }
     #[test]
     fn example1_2() {
-        assert_eq!((SOLVER.solve_1)("aa bb cc dd aa"), Solution::U8(0))
+        assert_eq!((SOLVER.solve_1)("aa bb cc dd aa"), Solution::U8(0));
     }
     #[test]
     fn example1_3() {
-        assert_eq!((SOLVER.solve_1)("aa bb cc dd aaa"), Solution::U8(1))
+        assert_eq!((SOLVER.solve_1)("aa bb cc dd aaa"), Solution::U8(1));
     }
 
     #[test]
     fn example2_1() {
-        assert_eq!((SOLVER.solve_2)("abcde fghij"), Solution::U8(1))
+        assert_eq!((SOLVER.solve_2)("abcde fghij"), Solution::U8(1));
     }
     #[test]
     fn example2_2() {
-        assert_eq!((SOLVER.solve_2)("abcde xyz ecdab"), Solution::U8(0))
+        assert_eq!((SOLVER.solve_2)("abcde xyz ecdab"), Solution::U8(0));
     }
     #[test]
     fn example2_3() {
-        assert_eq!((SOLVER.solve_2)("a ab abc abd abf abj"), Solution::U8(1))
+        assert_eq!((SOLVER.solve_2)("a ab abc abd abf abj"), Solution::U8(1));
     }
     #[test]
     fn example2_4() {
         assert_eq!(
             (SOLVER.solve_2)("iiii oiii ooii oooi oooo"),
             Solution::U8(1)
-        )
+        );
     }
     #[test]
     fn example2_5() {
-        assert_eq!((SOLVER.solve_2)("oiii ioii iioi iiio"), Solution::U8(0))
+        assert_eq!((SOLVER.solve_2)("oiii ioii iioi iiio"), Solution::U8(0));
     }
 }

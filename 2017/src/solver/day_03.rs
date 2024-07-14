@@ -115,7 +115,7 @@ pub const SOLVER: Solver = Solver {
                     distance_between_corners += 1;
                     is_first_corner_of_current_distance = true;
                 }
-                distance_to_next_corner = distance_between_corners - 1
+                distance_to_next_corner = distance_between_corners - 1;
             } else {
                 // Otherwise (not at a corner), reduce the distance to the next corner.
                 distance_to_next_corner -= 1;
@@ -174,14 +174,14 @@ mod test {
     // a singe number, a property no other loop has. Hence my solver starts from square 2.
     #[test]
     fn example1_1() {
-        assert_eq!((SOLVER.solve_1)("12"), Solution::U8(3))
+        assert_eq!((SOLVER.solve_1)("12"), Solution::U8(3));
     }
     #[test]
     fn example1_2() {
-        assert_eq!((SOLVER.solve_1)("23"), Solution::U8(2))
+        assert_eq!((SOLVER.solve_1)("23"), Solution::U8(2));
     }
     #[test]
     fn example1_3() {
-        assert_eq!((SOLVER.solve_1)("1024"), Solution::U8(31))
+        assert_eq!((SOLVER.solve_1)("1024"), Solution::U8(31));
     }
 }

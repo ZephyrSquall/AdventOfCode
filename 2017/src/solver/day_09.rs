@@ -80,72 +80,72 @@ mod test {
 
     #[test]
     fn example1_1() {
-        assert_eq!((SOLVER.solve_1)("{}"), Solution::U8(1))
+        assert_eq!((SOLVER.solve_1)("{}"), Solution::U8(1));
     }
     #[test]
     fn example1_2() {
-        assert_eq!((SOLVER.solve_1)("{{{}}}"), Solution::U8(6))
+        assert_eq!((SOLVER.solve_1)("{{{}}}"), Solution::U8(6));
     }
     #[test]
     fn example1_3() {
-        assert_eq!((SOLVER.solve_1)("{{},{}}"), Solution::U8(5))
+        assert_eq!((SOLVER.solve_1)("{{},{}}"), Solution::U8(5));
     }
     #[test]
     fn example1_4() {
-        assert_eq!((SOLVER.solve_1)("{{{},{},{{}}}}"), Solution::U8(16))
+        assert_eq!((SOLVER.solve_1)("{{{},{},{{}}}}"), Solution::U8(16));
     }
     #[test]
     fn example1_5() {
-        assert_eq!((SOLVER.solve_1)("{<a>,<a>,<a>,<a>}"), Solution::U8(1))
+        assert_eq!((SOLVER.solve_1)("{<a>,<a>,<a>,<a>}"), Solution::U8(1));
     }
     #[test]
     fn example1_6() {
         assert_eq!(
             (SOLVER.solve_1)("{{<ab>},{<ab>},{<ab>},{<ab>}}"),
             Solution::U8(9)
-        )
+        );
     }
     #[test]
     fn example1_7() {
         assert_eq!(
             (SOLVER.solve_1)("{{<!!>},{<!!>},{<!!>},{<!!>}}"),
             Solution::U8(9)
-        )
+        );
     }
     #[test]
     fn example1_8() {
         assert_eq!(
             (SOLVER.solve_1)("{{<a!>},{<a!>},{<a!>},{<ab>}}"),
             Solution::U8(3)
-        )
+        );
     }
 
     #[test]
     fn example2_1() {
-        assert_eq!((SOLVER.solve_2)("<>"), Solution::U8(0))
+        assert_eq!((SOLVER.solve_2)("<>"), Solution::U8(0));
     }
     #[test]
     fn example2_2() {
-        assert_eq!((SOLVER.solve_2)("<random characters>"), Solution::U8(17))
+        assert_eq!((SOLVER.solve_2)("<random characters>"), Solution::U8(17));
     }
     #[test]
     fn example2_3() {
-        assert_eq!((SOLVER.solve_2)("<<<<>"), Solution::U8(3))
+        assert_eq!((SOLVER.solve_2)("<<<<>"), Solution::U8(3));
     }
     #[test]
     fn example2_4() {
-        assert_eq!((SOLVER.solve_2)("<{!>}>"), Solution::U8(2))
+        assert_eq!((SOLVER.solve_2)("<{!>}>"), Solution::U8(2));
     }
     #[test]
     fn example2_5() {
-        assert_eq!((SOLVER.solve_2)("<!!>"), Solution::U8(0))
+        assert_eq!((SOLVER.solve_2)("<!!>"), Solution::U8(0));
     }
     #[test]
     fn example2_6() {
-        assert_eq!((SOLVER.solve_2)("<!!!>>"), Solution::U8(0))
+        assert_eq!((SOLVER.solve_2)("<!!!>>"), Solution::U8(0));
     }
     #[test]
     fn example2_7() {
-        assert_eq!((SOLVER.solve_2)("<{o\"i!a,<{i<a>"), Solution::U8(10))
+        assert_eq!((SOLVER.solve_2)("<{o\"i!a,<{i<a>"), Solution::U8(10));
     }
 }

@@ -1,11 +1,6 @@
-use std::{
-    cell::RefCell,
-    collections::{HashMap, VecDeque},
-    rc::Rc,
-    str::SplitWhitespace,
-};
-
 use super::{Solution, Solver};
+use rustc_hash::FxHashMap;
+use std::{cell::RefCell, collections::VecDeque, rc::Rc, str::SplitWhitespace};
 
 pub const SOLVER: Solver = Solver {
     day: 18,
@@ -16,7 +11,7 @@ pub const SOLVER: Solver = Solver {
         let mut program_state = ProgramState {
             program_counter: 0,
             last_frequency: None,
-            registers: HashMap::new(),
+            registers: FxHashMap::default(),
             is_terminating: false,
             this_message_queue: None,
             other_message_queue: None,
@@ -49,7 +44,7 @@ pub const SOLVER: Solver = Solver {
         let mut program_state_0 = ProgramState {
             program_counter: 0,
             last_frequency: None,
-            registers: HashMap::new(),
+            registers: FxHashMap::default(),
             is_terminating: false,
             this_message_queue: Some(Rc::clone(&program_0_message_queue)),
             other_message_queue: Some(Rc::clone(&program_1_message_queue)),
@@ -58,7 +53,7 @@ pub const SOLVER: Solver = Solver {
         let mut program_state_1 = ProgramState {
             program_counter: 0,
             last_frequency: None,
-            registers: HashMap::new(),
+            registers: FxHashMap::default(),
             is_terminating: false,
             this_message_queue: Some(program_1_message_queue),
             other_message_queue: Some(program_0_message_queue),
@@ -87,7 +82,7 @@ pub const SOLVER: Solver = Solver {
 struct ProgramState {
     program_counter: usize,
     last_frequency: Option<i64>,
-    registers: HashMap<char, i64>,
+    registers: FxHashMap<char, i64>,
     is_terminating: bool,
     this_message_queue: Option<Rc<RefCell<VecDeque<i64>>>>,
     other_message_queue: Option<Rc<RefCell<VecDeque<i64>>>>,
@@ -149,7 +144,7 @@ impl Instruction {
             Instruction::Mod(op_1, op_2) => Instruction::modulo(program_state, op_1, op_2),
             Instruction::Rcv(op_1) => Instruction::recover(program_state, op_1),
             Instruction::Jgz(op_1, op_2) => {
-                Instruction::jump_greater_zero(program_state, op_1, op_2)
+                Instruction::jump_greater_zero(program_state, op_1, op_2);
             }
         }
     }
@@ -163,7 +158,7 @@ impl Instruction {
             Instruction::Mod(op_1, op_2) => Instruction::modulo(program_state, op_1, op_2),
             Instruction::Rcv(op_1) => Instruction::receive(program_state, op_1),
             Instruction::Jgz(op_1, op_2) => {
-                Instruction::jump_greater_zero(program_state, op_1, op_2)
+                Instruction::jump_greater_zero(program_state, op_1, op_2);
             }
         }
     }
@@ -202,9 +197,11 @@ impl Instruction {
         if op_1 > 0 {
             let op_2 = op_2.get_value(program_state);
             if op_2.is_negative() {
-                program_state.program_counter -= op_2.unsigned_abs() as usize;
+                program_state.program_counter -= usize::try_from(op_2.unsigned_abs())
+                    .expect("Should be able to convert to usize losslessly");
             } else {
-                program_state.program_counter += op_2 as usize;
+                program_state.program_counter +=
+                    usize::try_from(op_2).expect("Should be able to convert to usize losslessly");
             }
         } else {
             program_state.program_counter += 1;
@@ -276,15 +273,14 @@ fn get_instructions(input: &str) -> Vec<Instruction> {
     // Helper function to extract operands for the snd and rcv instructions.
     fn get_operand(iter: &mut SplitWhitespace) -> RegisterOrValue {
         let op = iter.next().expect("Line should have third value");
-        let register_or_value = match op.parse() {
-            Ok(value) => RegisterOrValue::Value(value),
-            Err(_) => {
-                let char = op
-                    .chars()
-                    .next()
-                    .expect("Operand should be a number or single character");
-                RegisterOrValue::Register(char)
-            }
+        let register_or_value = if let Ok(value) = op.parse() {
+            RegisterOrValue::Value(value)
+        } else {
+            let char = op
+                .chars()
+                .next()
+                .expect("Operand should be a number or single character");
+            RegisterOrValue::Register(char)
         };
 
         register_or_value
@@ -358,7 +354,7 @@ set a 1
 jgz a -2"
             ),
             Solution::U8(4)
-        )
+        );
     }
 
     #[test]
@@ -376,6 +372,6 @@ rcv d
 "
             ),
             Solution::U8(3)
-        )
+        );
     }
 }

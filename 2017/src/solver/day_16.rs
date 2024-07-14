@@ -1,6 +1,5 @@
-use std::collections::VecDeque;
-
 use super::{Solution, Solver};
+use std::collections::VecDeque;
 
 pub const SOLVER: Solver = Solver {
     day: 16,
@@ -33,7 +32,7 @@ pub const SOLVER: Solver = Solver {
             dance_loop_size += 1;
         }
 
-        let unique_dances = 1000000000 % dance_loop_size;
+        let unique_dances = 1_000_000_000 % dance_loop_size;
         for _ in 0..unique_dances {
             dance(&mut dancers, input);
         }
@@ -109,7 +108,7 @@ mod test {
     fn example1_1() {
         let mut dancers = VecDeque::from(['a', 'b', 'c', 'd', 'e']);
         dance(&mut dancers, "s1,x3/4,pe/b");
-        assert_eq!(dancers.iter().collect::<String>(), "baedc")
+        assert_eq!(dancers.iter().collect::<String>(), "baedc");
     }
 
     #[test]
@@ -117,6 +116,6 @@ mod test {
         let mut dancers = VecDeque::from(['a', 'b', 'c', 'd', 'e']);
         dance(&mut dancers, "s1,x3/4,pe/b");
         dance(&mut dancers, "s1,x3/4,pe/b");
-        assert_eq!(dancers.iter().collect::<String>(), "ceadb")
+        assert_eq!(dancers.iter().collect::<String>(), "ceadb");
     }
 }

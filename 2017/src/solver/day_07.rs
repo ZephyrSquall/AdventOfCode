@@ -101,31 +101,6 @@ pub const SOLVER: Solver = Solver {
             }
         }
 
-        // Use the solution from part 1 to get the bottom program, from which the Disc tree can be
-        // built.
-        let bottom_program = (SOLVER.solve_1)(input).to_string();
-        let bottom_disc = Disc::new(input, &bottom_program);
-
-        // Find the correct cumulative weight for a sub-tower directly above the bottom program.
-        // This is done by checking the first three sub-towers' cumulative weights for a duplicated
-        // element (it is assumed that the base program has at least 3 sub-towers, as with only 2 it
-        // would be ambiguous which sub-tower had the wrong weight and the puzzle might not have a
-        // single solution).
-        let cw0 = bottom_disc.sub_towers[0].cumulative_weight;
-        let cw1 = bottom_disc.sub_towers[1].cumulative_weight;
-        let cw2 = bottom_disc.sub_towers[2].cumulative_weight;
-
-        let correct_cumulative_weight = if cw0 == cw1 || cw0 == cw2 {
-            // If cw0 is equal to any other value, then it must be a correct cumulative weight
-            // (there is only one incorrect weight).
-            cw0
-        } else {
-            // If cw0 is not equal to two other values, then it must be the incorrect cumulative
-            // weight (though not necessarily the incorrect weight as the incorrect cumulative
-            // weight can be caused by any disc above it having an incorrect weight).
-            cw1
-        };
-
         fn fix_wrong_weight(correct_cumulative_weight: usize, disc: Disc) -> usize {
             // We are only concerned with sub-towers that can have the incorrect value, so iterate
             // over all sub-towers to find the one with the wrong value.
@@ -198,6 +173,31 @@ pub const SOLVER: Solver = Solver {
             panic!()
         }
 
+        // Use the solution from part 1 to get the bottom program, from which the Disc tree can be
+        // built.
+        let bottom_program = (SOLVER.solve_1)(input).to_string();
+        let bottom_disc = Disc::new(input, &bottom_program);
+
+        // Find the correct cumulative weight for a sub-tower directly above the bottom program.
+        // This is done by checking the first three sub-towers' cumulative weights for a duplicated
+        // element (it is assumed that the base program has at least 3 sub-towers, as with only 2 it
+        // would be ambiguous which sub-tower had the wrong weight and the puzzle might not have a
+        // single solution).
+        let cw0 = bottom_disc.sub_towers[0].cumulative_weight;
+        let cw1 = bottom_disc.sub_towers[1].cumulative_weight;
+        let cw2 = bottom_disc.sub_towers[2].cumulative_weight;
+
+        let correct_cumulative_weight = if cw0 == cw1 || cw0 == cw2 {
+            // If cw0 is equal to any other value, then it must be a correct cumulative weight
+            // (there is only one incorrect weight).
+            cw0
+        } else {
+            // If cw0 is not equal to two other values, then it must be the incorrect cumulative
+            // weight (though not necessarily the incorrect weight as the incorrect cumulative
+            // weight can be caused by any disc above it having an incorrect weight).
+            cw1
+        };
+
         let correct_weight = fix_wrong_weight(correct_cumulative_weight, bottom_disc);
 
         Solution::USize(correct_weight)
@@ -228,7 +228,7 @@ gyxo (61)
 cntj (57)"
             ),
             Solution::Str("tknk")
-        )
+        );
     }
 
     #[test]
@@ -251,6 +251,6 @@ gyxo (61)
 cntj (57)"
             ),
             Solution::U8(60)
-        )
+        );
     }
 }

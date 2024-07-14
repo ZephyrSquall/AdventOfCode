@@ -8,5 +8,5 @@ mod solver;
 
 fn main() {
     let config = parse_arguments(args());
-    run(config);
+    run(&config);
 }

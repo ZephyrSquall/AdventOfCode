@@ -47,6 +47,13 @@ fn traverse_path<T, F: FnMut(&[Vec<char>], &mut T, usize, usize)>(
     update: &mut F,
     update_value: &mut T,
 ) {
+    enum Direction {
+        Up,
+        Right,
+        Down,
+        Left,
+    }
+
     let mut grid = Vec::new();
     for line in input.lines() {
         let mut grid_line = Vec::new();
@@ -54,13 +61,6 @@ fn traverse_path<T, F: FnMut(&[Vec<char>], &mut T, usize, usize)>(
             grid_line.push(char);
         }
         grid.push(grid_line);
-    }
-
-    enum Direction {
-        Up,
-        Right,
-        Down,
-        Left,
     }
 
     // Get the packet's starting position and direction, which is downwards from where the only
@@ -154,7 +154,7 @@ mod test {
                 "
             ),
             Solution::Str("ABCDEF")
-        )
+        );
     }
 
     #[test]
@@ -170,6 +170,6 @@ mod test {
                 "
             ),
             Solution::U8(38)
-        )
+        );
     }
 }

@@ -19,7 +19,7 @@ fn solve(input: &str, strange_jumps: bool) -> Solution {
     let mut position: isize = 0;
 
     loop {
-        match jumps.get_mut(position as usize) {
+        match jumps.get_mut(position.unsigned_abs()) {
             Some(jump) => {
                 step += 1;
                 position += *jump;

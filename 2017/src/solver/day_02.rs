@@ -64,7 +64,7 @@ mod test {
 2 4 6 8"
             ),
             Solution::U8(18)
-        )
+        );
     }
 
     #[test]
@@ -77,6 +77,6 @@ mod test {
 3 8 6 5"
             ),
             Solution::U8(9)
-        )
+        );
     }
 }

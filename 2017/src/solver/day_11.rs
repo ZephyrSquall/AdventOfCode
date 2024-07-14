@@ -96,18 +96,18 @@ mod test {
 
     #[test]
     fn example1_1() {
-        assert_eq!((SOLVER.solve_1)("ne,ne,ne"), Solution::U8(3))
+        assert_eq!((SOLVER.solve_1)("ne,ne,ne"), Solution::U8(3));
     }
     #[test]
     fn example1_2() {
-        assert_eq!((SOLVER.solve_1)("ne,ne,sw,sw"), Solution::U8(0))
+        assert_eq!((SOLVER.solve_1)("ne,ne,sw,sw"), Solution::U8(0));
     }
     #[test]
     fn example1_3() {
-        assert_eq!((SOLVER.solve_1)("ne,ne,s,s"), Solution::U8(2))
+        assert_eq!((SOLVER.solve_1)("ne,ne,s,s"), Solution::U8(2));
     }
     #[test]
     fn example1_4() {
-        assert_eq!((SOLVER.solve_1)("se,sw,se,sw,sw"), Solution::U8(3))
+        assert_eq!((SOLVER.solve_1)("se,sw,se,sw,sw"), Solution::U8(3));
     }
 }

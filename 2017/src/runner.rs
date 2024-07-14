@@ -25,13 +25,13 @@ struct SolutionFormat {
     time_2: String,
 }
 
-pub fn run(config: Vec<u8>) {
+pub fn run(config: &[u8]) {
     let (solution_formats, max_length) = run_solvers(config);
 
-    print_results_table(solution_formats, max_length);
+    print_results_table(solution_formats, &max_length);
 }
 
-fn run_solvers(config: Vec<u8>) -> (Vec<SolutionFormat>, MaxLength) {
+fn run_solvers(config: &[u8]) -> (Vec<SolutionFormat>, MaxLength) {
     let mut solution_formats = Vec::with_capacity(SOLVERS.len());
     let mut max_length = MaxLength {
         day: DAY_TITLE.len(),
@@ -87,22 +87,22 @@ fn run_solvers(config: Vec<u8>) -> (Vec<SolutionFormat>, MaxLength) {
             // Check if the length of any data to be displayed exceeds the current maximum length.
             // If so, update the maximum length.
             if solution_format.day.len() > max_length.day {
-                max_length.day = solution_format.day.len()
+                max_length.day = solution_format.day.len();
             }
             if solution_format.title.len() > max_length.puzzle {
-                max_length.puzzle = solution_format.title.len()
+                max_length.puzzle = solution_format.title.len();
             }
             if solution_format.solution_1.len() > max_length.solution {
-                max_length.solution = solution_format.solution_1.len()
+                max_length.solution = solution_format.solution_1.len();
             }
             if solution_format.solution_2.len() > max_length.solution {
-                max_length.solution = solution_format.solution_2.len()
+                max_length.solution = solution_format.solution_2.len();
             }
             if solution_format.time_1.len() > max_length.timing {
-                max_length.timing = solution_format.time_1.len()
+                max_length.timing = solution_format.time_1.len();
             }
             if solution_format.time_2.len() > max_length.timing {
-                max_length.timing = solution_format.time_2.len()
+                max_length.timing = solution_format.time_2.len();
             }
 
             solution_formats.push(solution_format);
@@ -112,7 +112,10 @@ fn run_solvers(config: Vec<u8>) -> (Vec<SolutionFormat>, MaxLength) {
     (solution_formats, max_length)
 }
 
-fn print_results_table(solution_formats: Vec<SolutionFormat>, max_length: MaxLength) {
+// This function displays the results table, so it is the only place in this repository where
+// printing is intentionally used to create user-facing output.
+#[allow(clippy::print_stdout)]
+fn print_results_table(solution_formats: Vec<SolutionFormat>, max_length: &MaxLength) {
     // Generate table header
     println!(
         "╔═{empty:═<day_width$}═╤═{empty:═<puzzle_width$}═╤═{empty:═<part_width$}═╤═{empty:═<solution_width$}═╤═{empty:═<timing_width$}═╗",

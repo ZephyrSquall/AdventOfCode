@@ -69,7 +69,7 @@ fn get_knot_hash_binaries(input: &str) -> Vec<u128> {
     let mut knot_hash_binaries = Vec::with_capacity(128);
 
     for row in 0..128 {
-        let hash_input = format!("{}-{}", input, row);
+        let hash_input = format!("{input}-{row}");
         let knot_hash = (super::day_10::SOLVER.solve_2)(&hash_input).to_string();
         let knot_hash_binary = u128::from_str_radix(&knot_hash, 16).expect("Error parsing hash");
 
@@ -162,11 +162,11 @@ mod test {
 
     #[test]
     fn example1_1() {
-        assert_eq!((SOLVER.solve_1)("flqrgnkx"), Solution::U16(8108))
+        assert_eq!((SOLVER.solve_1)("flqrgnkx"), Solution::U16(8108));
     }
 
     #[test]
     fn example2_1() {
-        assert_eq!((SOLVER.solve_2)("flqrgnkx"), Solution::U16(1242))
+        assert_eq!((SOLVER.solve_2)("flqrgnkx"), Solution::U16(1242));
     }
 }

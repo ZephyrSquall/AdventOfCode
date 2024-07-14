@@ -54,39 +54,39 @@ mod test {
 
     #[test]
     fn example1_1() {
-        assert_eq!((SOLVER.solve_1)("1122"), Solution::U8(3))
+        assert_eq!((SOLVER.solve_1)("1122"), Solution::U8(3));
     }
     #[test]
     fn example1_2() {
-        assert_eq!((SOLVER.solve_1)("1111"), Solution::U8(4))
+        assert_eq!((SOLVER.solve_1)("1111"), Solution::U8(4));
     }
     #[test]
     fn example1_3() {
-        assert_eq!((SOLVER.solve_1)("1234"), Solution::U8(0))
+        assert_eq!((SOLVER.solve_1)("1234"), Solution::U8(0));
     }
     #[test]
     fn example1_4() {
-        assert_eq!((SOLVER.solve_1)("91212129"), Solution::U8(9))
+        assert_eq!((SOLVER.solve_1)("91212129"), Solution::U8(9));
     }
 
     #[test]
     fn example2_1() {
-        assert_eq!((SOLVER.solve_2)("1212"), Solution::U8(6))
+        assert_eq!((SOLVER.solve_2)("1212"), Solution::U8(6));
     }
     #[test]
     fn example2_2() {
-        assert_eq!((SOLVER.solve_2)("1221"), Solution::U8(0))
+        assert_eq!((SOLVER.solve_2)("1221"), Solution::U8(0));
     }
     #[test]
     fn example2_3() {
-        assert_eq!((SOLVER.solve_2)("123425"), Solution::U8(4))
+        assert_eq!((SOLVER.solve_2)("123425"), Solution::U8(4));
     }
     #[test]
     fn example2_4() {
-        assert_eq!((SOLVER.solve_2)("123123"), Solution::U8(12))
+        assert_eq!((SOLVER.solve_2)("123123"), Solution::U8(12));
     }
     #[test]
     fn example2_5() {
-        assert_eq!((SOLVER.solve_2)("12131415"), Solution::U8(4))
+        assert_eq!((SOLVER.solve_2)("12131415"), Solution::U8(4));
     }
 }

@@ -1,6 +1,5 @@
-use std::collections::HashMap;
-
 use super::{Solution, Solver};
+use rustc_hash::FxHashMap;
 
 pub const SOLVER: Solver = Solver {
     day: 13,
@@ -12,7 +11,7 @@ pub const SOLVER: Solver = Solver {
 
         for depth in 0..=greatest_depth {
             if advance_picosecond(&mut firewall).contains(&depth) {
-                total_severity += depth as u32 * firewall[&depth].range as u32;
+                total_severity += u32::from(depth) * u32::from(firewall[&depth].range);
             }
         }
 
@@ -20,13 +19,12 @@ pub const SOLVER: Solver = Solver {
     },
 
     solve_2: |input| {
-        let (mut firewall, greatest_depth) = get_firewall(input);
-
         struct Packet {
             delay: u32,
             depth: u8,
         }
 
+        let (mut firewall, greatest_depth) = get_firewall(input);
         let mut packets = Vec::new();
         let mut delay: u32 = 0;
 
@@ -60,8 +58,8 @@ struct Layer {
     is_moving_down: bool,
 }
 
-fn get_firewall(input: &str) -> (HashMap<u8, Layer>, u8) {
-    let mut firewall = HashMap::new();
+fn get_firewall(input: &str) -> (FxHashMap<u8, Layer>, u8) {
+    let mut firewall = FxHashMap::default();
     let mut greatest_depth = 0;
 
     for line in input.lines() {
@@ -95,7 +93,7 @@ fn get_firewall(input: &str) -> (HashMap<u8, Layer>, u8) {
 
 // Advances all scanners by one step. Returns a vector of all depths at which a packet would be
 // caught.
-fn advance_picosecond(firewall: &mut HashMap<u8, Layer>) -> Vec<u8> {
+fn advance_picosecond(firewall: &mut FxHashMap<u8, Layer>) -> Vec<u8> {
     let mut caught_depths = Vec::new();
 
     for (depth, layer) in firewall {
@@ -138,7 +136,7 @@ mod test {
 6: 4"
             ),
             Solution::U8(24)
-        )
+        );
     }
 
     #[test]
@@ -152,6 +150,6 @@ mod test {
 6: 4"
             ),
             Solution::U8(10)
-        )
+        );
     }
 }

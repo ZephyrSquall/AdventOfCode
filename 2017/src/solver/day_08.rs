@@ -1,13 +1,12 @@
-use std::collections::HashMap;
-
 use super::{Solution, Solver};
+use rustc_hash::FxHashMap;
 
 pub const SOLVER: Solver = Solver {
     day: 8,
     title: "I Heard You Like Registers",
 
     solve_1: |input| {
-        let mut registers = HashMap::new();
+        let mut registers = FxHashMap::default();
 
         for line in input.lines() {
             let instruction = get_instruction(line);
@@ -17,7 +16,7 @@ pub const SOLVER: Solver = Solver {
             if test_condition(
                 *condition_register_ref,
                 instruction.condition_amount,
-                instruction.condition,
+                &instruction.condition,
             ) {
                 let operation_register_ref =
                     registers.entry(instruction.operation_register).or_insert(0);
@@ -36,7 +35,7 @@ pub const SOLVER: Solver = Solver {
     },
 
     solve_2: |input| {
-        let mut registers = HashMap::new();
+        let mut registers = FxHashMap::default();
         let mut largest_value = i32::MIN;
 
         for line in input.lines() {
@@ -47,7 +46,7 @@ pub const SOLVER: Solver = Solver {
             if test_condition(
                 *condition_register_ref,
                 instruction.condition_amount,
-                instruction.condition,
+                &instruction.condition,
             ) {
                 let operation_register_ref =
                     registers.entry(instruction.operation_register).or_insert(0);
@@ -130,7 +129,7 @@ fn get_instruction(line: &str) -> Instruction {
     }
 }
 
-fn test_condition(a: i32, b: i32, condition: Condition) -> bool {
+fn test_condition(a: i32, b: i32, condition: &Condition) -> bool {
     match condition {
         Condition::EqualTo => a == b,
         Condition::NotEqualTo => a != b,
@@ -156,7 +155,7 @@ c dec -10 if a >= 1
 c inc -20 if c == 10"
             ),
             Solution::U8(1)
-        )
+        );
     }
 
     #[test]
@@ -170,6 +169,6 @@ c dec -10 if a >= 1
 c inc -20 if c == 10"
             ),
             Solution::U8(10)
-        )
+        );
     }
 }

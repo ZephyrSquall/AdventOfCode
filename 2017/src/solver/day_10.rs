@@ -1,6 +1,5 @@
-use std::fmt::Write;
-
 use super::{Solution, Solver};
+use std::fmt::Write;
 
 pub const SOLVER: Solver = Solver {
     day: 10,
@@ -18,7 +17,7 @@ pub const SOLVER: Solver = Solver {
         };
         knot_hash_round(&mut knot_hash, &lengths);
 
-        Solution::U16(knot_hash.list[0] as u16 * knot_hash.list[1] as u16)
+        Solution::U16(u16::from(knot_hash.list[0]) * u16::from(knot_hash.list[1]))
     },
 
     solve_2: |input| {
@@ -43,7 +42,7 @@ pub const SOLVER: Solver = Solver {
         }
 
         let dense_hash = dense_hash.iter().fold(String::new(), |mut acc, dh| {
-            write!(acc, "{:0>2x}", dh).expect("Writing to String can't fail");
+            write!(acc, "{dh:0>2x}").expect("Writing to String can't fail");
             acc
         });
         Solution::String(dense_hash)
@@ -108,9 +107,9 @@ mod test {
         };
         knot_hash_round(&mut knot_hash, &lengths);
         assert_eq!(
-            Solution::U16(knot_hash.list[0] as u16 * knot_hash.list[1] as u16),
+            Solution::U16(u16::from(knot_hash.list[0]) * u16::from(knot_hash.list[1])),
             Solution::U8(12)
-        )
+        );
     }
 
     #[test]
@@ -118,27 +117,27 @@ mod test {
         assert_eq!(
             (SOLVER.solve_2)(""),
             Solution::Str("a2582a3a0e66e6e86e3812dcb672a272")
-        )
+        );
     }
     #[test]
     fn example2_2() {
         assert_eq!(
             (SOLVER.solve_2)("AoC 2017"),
             Solution::Str("33efeb34ea91902bb2f59c9920caa6cd")
-        )
+        );
     }
     #[test]
     fn example2_3() {
         assert_eq!(
             (SOLVER.solve_2)("1,2,3"),
             Solution::Str("3efbe78a8d82f29979031a4aa0b16a9d")
-        )
+        );
     }
     #[test]
     fn example2_4() {
         assert_eq!(
             (SOLVER.solve_2)("1,2,4"),
             Solution::Str("63960835bcdc130f0b66d7ff4f6a5a8e")
-        )
+        );
     }
 }
