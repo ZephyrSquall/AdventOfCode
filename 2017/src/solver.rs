@@ -19,8 +19,9 @@ pub mod day_16;
 pub mod day_17;
 pub mod day_18;
 pub mod day_19;
+pub mod day_20;
 
-pub const SOLVERS: [Solver; 19] = [
+pub const SOLVERS: [Solver; 20] = [
     day_01::SOLVER,
     day_02::SOLVER,
     day_03::SOLVER,
@@ -40,6 +41,7 @@ pub const SOLVERS: [Solver; 19] = [
     day_17::SOLVER,
     day_18::SOLVER,
     day_19::SOLVER,
+    day_20::SOLVER,
 ];
 
 pub struct Solver<'a> {
@@ -93,7 +95,7 @@ impl<'a> fmt::Display for Solution<'a> {
 
 // A solution is only intended to be used for printing in the results table. For this purpose, any
 // solutions that convert to the same string are equal. Note that testing for solution equality is
-// only intended for unit tests; this functionality isn't required by the solver runner.
+// only intended for unit tests; this functionality isn't required by the runner.
 impl<'a> PartialEq for Solution<'a> {
     fn eq(&self, other: &Self) -> bool {
         self.to_string() == other.to_string()
