@@ -6,7 +6,7 @@ pub const SOLVER: Solver = Solver {
     title: "Fractal Art",
 
     solve_1: |input| solve(input, 5),
-    solve_2: |input| Solution::U8(0),
+    solve_2: |input| solve(input, 18),
 };
 
 // Convert a 2D grid of bools to its string representation in the list of enhancement rules.
@@ -212,7 +212,7 @@ fn solve(input: &str, iterations: u8) -> Solution {
             }
         }
     }
-    Solution::U16(pixel_count)
+    Solution::U32(pixel_count)
 }
 
 #[cfg(test)]
