@@ -270,7 +270,7 @@ impl Instruction {
 }
 
 fn get_instructions(input: &str) -> Vec<Instruction> {
-    // Helper function to extract operands for the snd and rcv instructions.
+    // Helper function to extract an operand.
     fn get_operand(iter: &mut SplitWhitespace) -> RegisterOrValue {
         let op = iter.next().expect("Line should have third value");
         let register_or_value = if let Ok(value) = op.parse() {
