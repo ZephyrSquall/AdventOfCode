@@ -19,16 +19,14 @@ struct MaxLength {
 struct SolutionFormat {
     day: String,
     title: String,
-    solution_1: String,
-    solution_2: String,
-    time_1: String,
-    time_2: String,
+    solutions: Vec<String>,
+    times: Vec<String>,
 }
 
 pub fn run(config: &[u8]) {
     let (solution_formats, max_length) = run_solvers(config);
 
-    print_results_table(solution_formats, &max_length);
+    print_results_table(&solution_formats, &max_length);
 }
 
 fn run_solvers(config: &[u8]) -> (Vec<SolutionFormat>, MaxLength) {
@@ -52,36 +50,44 @@ fn run_solvers(config: &[u8]) -> (Vec<SolutionFormat>, MaxLength) {
             let file_path = format!("puzzle_inputs/{:02}.txt", solver.day);
             let input = fs::read_to_string(&file_path).expect("Error reading file");
 
+            let mut solutions = Vec::with_capacity(2);
+            let mut times = Vec::with_capacity(2);
+
             // Run the solvers while measuring their execution time.
-            let start = Instant::now();
-            let solution_1 = (solver.solve_1)(&input);
-            let duration = start.elapsed();
-            let time_1 = duration.as_micros();
+            for part_solver in solver.part_solvers {
+                let start = Instant::now();
+                let solution = part_solver(&input);
+                let duration = start.elapsed();
+                let time = duration.as_micros();
 
-            let start = Instant::now();
-            let solution_2 = (solver.solve_2)(&input);
-            let duration = start.elapsed();
-            let time_2 = duration.as_micros();
+                let solution = solution.to_string();
+                // Pad time strings with zeroes until they are at least four characters long, then
+                // insert a decimal point three characters from the end of the string. This way the
+                // number of microseconds is converted to a display of milliseconds with a
+                // fractional part.
+                let mut time = format!("{time:04}");
+                time.insert(time.len() - 3, '.');
 
-            // Pad time strings with zeroes until they are at least four characters long, then
-            // insert a decimal point three characters from the end of the string. This way the
-            // number of microseconds is converted to a display of milliseconds with a fractional
-            // part.
-            let mut time_1 = format!("{time_1:04}");
-            time_1.insert(time_1.len() - 3, '.');
+                // Check if the length of any data to be displayed exceeds the current maximum
+                // length. If so, update the maximum length.
+                if solution.len() > max_length.solution {
+                    max_length.solution = solution.len();
+                }
+                if time.len() > max_length.timing {
+                    max_length.timing = time.len();
+                }
 
-            let mut time_2 = format!("{time_2:04}");
-            time_2.insert(time_2.len() - 3, '.');
+                solutions.push(solution);
+                times.push(time);
+            }
 
             // Store the string representation of all information to be printed in the results
             // table.
             let solution_format = SolutionFormat {
                 day: solver.day.to_string(),
                 title: solver.title.to_string(),
-                solution_1: solution_1.to_string(),
-                solution_2: solution_2.to_string(),
-                time_1,
-                time_2,
+                solutions,
+                times,
             };
 
             // Check if the length of any data to be displayed exceeds the current maximum length.
@@ -91,18 +97,6 @@ fn run_solvers(config: &[u8]) -> (Vec<SolutionFormat>, MaxLength) {
             }
             if solution_format.title.len() > max_length.puzzle {
                 max_length.puzzle = solution_format.title.len();
-            }
-            if solution_format.solution_1.len() > max_length.solution {
-                max_length.solution = solution_format.solution_1.len();
-            }
-            if solution_format.solution_2.len() > max_length.solution {
-                max_length.solution = solution_format.solution_2.len();
-            }
-            if solution_format.time_1.len() > max_length.timing {
-                max_length.timing = solution_format.time_1.len();
-            }
-            if solution_format.time_2.len() > max_length.timing {
-                max_length.timing = solution_format.time_2.len();
             }
 
             solution_formats.push(solution_format);
@@ -115,7 +109,7 @@ fn run_solvers(config: &[u8]) -> (Vec<SolutionFormat>, MaxLength) {
 // This function displays the results table, so it is the only place in this repository where
 // printing is intentionally used to create user-facing output.
 #[allow(clippy::print_stdout)]
-fn print_results_table(solution_formats: Vec<SolutionFormat>, max_length: &MaxLength) {
+fn print_results_table(solution_formats: &Vec<SolutionFormat>, max_length: &MaxLength) {
     // Generate table header
     println!(
         "╔═{empty:═<day_width$}═╤═{empty:═<puzzle_width$}═╤═{empty:═<part_width$}═╤═{empty:═<solution_width$}═╤═{empty:═<timing_width$}═╗",
@@ -161,31 +155,23 @@ fn print_results_table(solution_formats: Vec<SolutionFormat>, max_length: &MaxLe
                 timing_width = max_length.timing
             );
         }
-        println!(
-            "║ {day:>day_width$} │ {puzzle:puzzle_width$} │ {part:>part_width$} │ {solution:>solution_width$} │ {timing:>timing_width$} ║",
-            day = solution_format.day,
-            puzzle = solution_format.title,
-            part = "1",
-            solution = solution_format.solution_1,
-            timing = solution_format.time_1,
-            day_width = max_length.day,
-            puzzle_width = max_length.puzzle,
-            part_width = max_length.part,
-            solution_width = max_length.solution,
-            timing_width = max_length.timing
-        );
-        println!(
-            "║ {empty:day_width$} │ {empty:puzzle_width$} │ {part:>part_width$} │ {solution:>solution_width$} │ {timing:>timing_width$} ║",
-            empty = "",
-            part = "2",
-            solution = solution_format.solution_2,
-            timing = solution_format.time_2,
-            day_width = max_length.day,
-            puzzle_width = max_length.puzzle,
-            part_width = max_length.part,
-            solution_width = max_length.solution,
-            timing_width = max_length.timing
-        );
+        // Print the rows containing data from the solver. It is assumed that
+        // solution_format.solutions.len() and solution_format.times.len() are the same length.
+        for index in 0..solution_format.solutions.len() {
+            println!(
+                "║ {day:>day_width$} │ {puzzle:puzzle_width$} │ {part:>part_width$} │ {solution:>solution_width$} │ {timing:>timing_width$} ║",
+                day = if index == 0 {&solution_format.day} else {""},
+                puzzle = if index == 0 {&solution_format.title} else {""},
+                part = (index + 1).to_string(),
+                solution = solution_format.solutions[index],
+                timing = solution_format.times[index],
+                day_width = max_length.day,
+                puzzle_width = max_length.puzzle,
+                part_width = max_length.part,
+                solution_width = max_length.solution,
+                timing_width = max_length.timing
+            );
+        }
     }
 
     // Generate table footer

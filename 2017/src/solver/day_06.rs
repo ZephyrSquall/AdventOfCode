@@ -3,10 +3,16 @@ use super::{Solution, Solver};
 pub const SOLVER: Solver = Solver {
     day: 6,
     title: "Memory Reallocation",
-
-    solve_1: |input| solve(input, false),
-    solve_2: |input| solve(input, true),
+    part_solvers: &[solve_1, solve_2],
 };
+
+fn solve_1(input: &str) -> Solution {
+    solve(input, false)
+}
+
+fn solve_2(input: &str) -> Solution {
+    solve(input, true)
+}
 
 fn solve(input: &str, get_loop_size: bool) -> Solution {
     // Use the input to initialize the first bank configuration and bank history.
@@ -62,11 +68,11 @@ mod test {
 
     #[test]
     fn example1_1() {
-        assert_eq!((SOLVER.solve_1)("0 2 7 0"), Solution::U8(5));
+        assert_eq!(solve_1("0 2 7 0"), Solution::U8(5));
     }
 
     #[test]
     fn example2_1() {
-        assert_eq!((SOLVER.solve_2)("0 2 7 0"), Solution::U8(4));
+        assert_eq!(solve_2("0 2 7 0"), Solution::U8(4));
     }
 }

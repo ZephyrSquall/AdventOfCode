@@ -4,10 +4,16 @@ use rustc_hash::FxHashMap;
 pub const SOLVER: Solver = Solver {
     day: 21,
     title: "Fractal Art",
-
-    solve_1: |input| solve(input, 5),
-    solve_2: |input| solve(input, 18),
+    part_solvers: &[solve_1, solve_2],
 };
+
+fn solve_1(input: &str) -> Solution {
+    solve(input, 5)
+}
+
+fn solve_2(input: &str) -> Solution {
+    solve(input, 18)
+}
 
 // Convert a 2D grid of bools to its string representation in the list of enhancement rules.
 fn serialize(grid: &[Vec<bool>]) -> String {

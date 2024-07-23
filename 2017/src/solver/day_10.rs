@@ -4,50 +4,51 @@ use std::fmt::Write;
 pub const SOLVER: Solver = Solver {
     day: 10,
     title: "Knot Hash",
-
-    solve_1: |input| {
-        let lengths = input
-            .split(',')
-            .map(|s| s.parse::<u8>().expect("Error parsing number"))
-            .collect::<Vec<u8>>();
-        let mut knot_hash = KnotHashResult {
-            list: (0..=255).collect(),
-            position: 0,
-            skip_size: 0,
-        };
-        knot_hash_round(&mut knot_hash, &lengths);
-
-        Solution::U16(u16::from(knot_hash.list[0]) * u16::from(knot_hash.list[1]))
-    },
-
-    solve_2: |input| {
-        let lengths = [input.as_bytes(), &[17, 31, 73, 47, 23]].concat();
-        let mut result = KnotHashResult {
-            list: (0..=255).collect(),
-            position: 0,
-            skip_size: 0,
-        };
-        for _ in 0..64 {
-            knot_hash_round(&mut result, &lengths);
-        }
-
-        let mut dense_hash = Vec::new();
-        for block in result.list.chunks(16) {
-            let mut dense_number = 0;
-            for number in block {
-                dense_number ^= number;
-            }
-
-            dense_hash.push(dense_number);
-        }
-
-        let dense_hash = dense_hash.iter().fold(String::new(), |mut acc, dh| {
-            write!(acc, "{dh:0>2x}").expect("Writing to String can't fail");
-            acc
-        });
-        Solution::String(dense_hash)
-    },
+    part_solvers: &[solve_1, solve_2],
 };
+
+fn solve_1(input: &str) -> Solution {
+    let lengths = input
+        .split(',')
+        .map(|s| s.parse::<u8>().expect("Error parsing number"))
+        .collect::<Vec<u8>>();
+    let mut knot_hash = KnotHashResult {
+        list: (0..=255).collect(),
+        position: 0,
+        skip_size: 0,
+    };
+    knot_hash_round(&mut knot_hash, &lengths);
+
+    Solution::U16(u16::from(knot_hash.list[0]) * u16::from(knot_hash.list[1]))
+}
+
+fn solve_2(input: &str) -> Solution {
+    let lengths = [input.as_bytes(), &[17, 31, 73, 47, 23]].concat();
+    let mut result = KnotHashResult {
+        list: (0..=255).collect(),
+        position: 0,
+        skip_size: 0,
+    };
+    for _ in 0..64 {
+        knot_hash_round(&mut result, &lengths);
+    }
+
+    let mut dense_hash = Vec::new();
+    for block in result.list.chunks(16) {
+        let mut dense_number = 0;
+        for number in block {
+            dense_number ^= number;
+        }
+
+        dense_hash.push(dense_number);
+    }
+
+    let dense_hash = dense_hash.iter().fold(String::new(), |mut acc, dh| {
+        write!(acc, "{dh:0>2x}").expect("Writing to String can't fail");
+        acc
+    });
+    Solution::String(dense_hash)
+}
 
 struct KnotHashResult {
     position: usize,
@@ -115,28 +116,28 @@ mod test {
     #[test]
     fn example2_1() {
         assert_eq!(
-            (SOLVER.solve_2)(""),
+            solve_2(""),
             Solution::Str("a2582a3a0e66e6e86e3812dcb672a272")
         );
     }
     #[test]
     fn example2_2() {
         assert_eq!(
-            (SOLVER.solve_2)("AoC 2017"),
+            solve_2("AoC 2017"),
             Solution::Str("33efeb34ea91902bb2f59c9920caa6cd")
         );
     }
     #[test]
     fn example2_3() {
         assert_eq!(
-            (SOLVER.solve_2)("1,2,3"),
+            solve_2("1,2,3"),
             Solution::Str("3efbe78a8d82f29979031a4aa0b16a9d")
         );
     }
     #[test]
     fn example2_4() {
         assert_eq!(
-            (SOLVER.solve_2)("1,2,4"),
+            solve_2("1,2,4"),
             Solution::Str("63960835bcdc130f0b66d7ff4f6a5a8e")
         );
     }

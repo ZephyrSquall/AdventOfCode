@@ -4,32 +4,33 @@ use rustc_hash::FxHashMap;
 pub const SOLVER: Solver = Solver {
     day: 12,
     title: "Digital Plumber",
-
-    solve_1: |input| {
-        let pipes = get_pipes(input);
-
-        Solution::USize(get_pipe_group(0, &pipes).len())
-    },
-
-    solve_2: |input| {
-        let pipes = get_pipes(input);
-
-        let mut groups: u16 = 0;
-        let mut found_pipes = Vec::new();
-
-        // Iterate over every pipe. Check if it's been previously found as a member of a group
-        // (tracked by found_pipes). If not, find all connected pipes and add them to found_pipes,
-        // then increment group count.
-        for starting_pipe in pipes.keys() {
-            if !found_pipes.contains(starting_pipe) {
-                found_pipes.append(&mut get_pipe_group(*starting_pipe, &pipes));
-                groups += 1;
-            }
-        }
-
-        Solution::U16(groups)
-    },
+    part_solvers: &[solve_1, solve_2],
 };
+
+fn solve_1(input: &str) -> Solution {
+    let pipes = get_pipes(input);
+
+    Solution::USize(get_pipe_group(0, &pipes).len())
+}
+
+fn solve_2(input: &str) -> Solution {
+    let pipes = get_pipes(input);
+
+    let mut groups: u16 = 0;
+    let mut found_pipes = Vec::new();
+
+    // Iterate over every pipe. Check if it's been previously found as a member of a group (tracked
+    // by found_pipes). If not, find all connected pipes and add them to found_pipes, then increment
+    // group count.
+    for starting_pipe in pipes.keys() {
+        if !found_pipes.contains(starting_pipe) {
+            found_pipes.append(&mut get_pipe_group(*starting_pipe, &pipes));
+            groups += 1;
+        }
+    }
+
+    Solution::U16(groups)
+}
 
 // Get hashmap of pipe IDs to all pipes its connected to.
 fn get_pipes(input: &str) -> FxHashMap<u16, Vec<u16>> {
@@ -86,7 +87,7 @@ mod test {
     #[test]
     fn example1_1() {
         assert_eq!(
-            (SOLVER.solve_1)(
+            solve_1(
                 "\
 0 <-> 2
 1 <-> 1
@@ -103,7 +104,7 @@ mod test {
     #[test]
     fn example2_1() {
         assert_eq!(
-            (SOLVER.solve_2)(
+            solve_2(
                 "\
 0 <-> 2
 1 <-> 1

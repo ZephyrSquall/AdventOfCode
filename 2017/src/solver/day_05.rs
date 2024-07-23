@@ -3,10 +3,16 @@ use super::{Solution, Solver};
 pub const SOLVER: Solver = Solver {
     day: 5,
     title: "A Maze of Twisty Trampolines, All Alike",
-
-    solve_1: |input| solve(input, false),
-    solve_2: |input| solve(input, true),
+    part_solvers: &[solve_1, solve_2],
 };
+
+fn solve_1(input: &str) -> Solution {
+    solve(input, false)
+}
+
+fn solve_2(input: &str) -> Solution {
+    solve(input, true)
+}
 
 fn solve(input: &str, strange_jumps: bool) -> Solution {
     let mut jumps = Vec::new();
@@ -42,7 +48,7 @@ mod test {
     #[test]
     fn example1_1() {
         assert_eq!(
-            (SOLVER.solve_1)(
+            solve_1(
                 "\
 0
 3
@@ -57,7 +63,7 @@ mod test {
     #[test]
     fn example2_1() {
         assert_eq!(
-            (SOLVER.solve_2)(
+            solve_2(
                 "\
 0
 3

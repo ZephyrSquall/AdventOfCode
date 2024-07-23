@@ -3,40 +3,41 @@ use super::{Solution, Solver};
 pub const SOLVER: Solver = Solver {
     day: 11,
     title: "Hex Ed",
-
-    solve_1: |input| {
-        // Every space on the hex grid can be reached using only moves along the north-south axis
-        // and the northeast-southwest axis (a southeast move is a northeast and south move
-        // together, and a northwest move is a southwest and north move together). Let the
-        // northeast-southwest axis be the x-axis and the north-south axis be the y-axis (northeast
-        // and north are the positive directions).
-        let mut hex_x: i32 = 0;
-        let mut hex_y: i32 = 0;
-
-        for direction in input.split(',') {
-            step(direction, &mut hex_x, &mut hex_y);
-        }
-
-        Solution::I32(get_distance(hex_x, hex_y))
-    },
-
-    solve_2: |input| {
-        let mut hex_x: i32 = 0;
-        let mut hex_y: i32 = 0;
-        let mut furthest_distance = 0;
-
-        for direction in input.split(',') {
-            step(direction, &mut hex_x, &mut hex_y);
-
-            let distance = get_distance(hex_x, hex_y);
-            if distance > furthest_distance {
-                furthest_distance = distance;
-            }
-        }
-
-        Solution::I32(furthest_distance)
-    },
+    part_solvers: &[solve_1, solve_2],
 };
+
+fn solve_1(input: &str) -> Solution {
+    // Every space on the hex grid can be reached using only moves along the north-south axis and
+    // the northeast-southwest axis (a southeast move is a northeast and south move together, and a
+    // northwest move is a southwest and north move together). Let the northeast-southwest axis be
+    // the x-axis and the north-south axis be the y-axis (northeast and north are the positive
+    // directions).
+    let mut hex_x: i32 = 0;
+    let mut hex_y: i32 = 0;
+
+    for direction in input.split(',') {
+        step(direction, &mut hex_x, &mut hex_y);
+    }
+
+    Solution::I32(get_distance(hex_x, hex_y))
+}
+
+fn solve_2(input: &str) -> Solution {
+    let mut hex_x: i32 = 0;
+    let mut hex_y: i32 = 0;
+    let mut furthest_distance = 0;
+
+    for direction in input.split(',') {
+        step(direction, &mut hex_x, &mut hex_y);
+
+        let distance = get_distance(hex_x, hex_y);
+        if distance > furthest_distance {
+            furthest_distance = distance;
+        }
+    }
+
+    Solution::I32(furthest_distance)
+}
 
 fn step(direction: &str, hex_x: &mut i32, hex_y: &mut i32) {
     match direction {
@@ -96,18 +97,18 @@ mod test {
 
     #[test]
     fn example1_1() {
-        assert_eq!((SOLVER.solve_1)("ne,ne,ne"), Solution::U8(3));
+        assert_eq!(solve_1("ne,ne,ne"), Solution::U8(3));
     }
     #[test]
     fn example1_2() {
-        assert_eq!((SOLVER.solve_1)("ne,ne,sw,sw"), Solution::U8(0));
+        assert_eq!(solve_1("ne,ne,sw,sw"), Solution::U8(0));
     }
     #[test]
     fn example1_3() {
-        assert_eq!((SOLVER.solve_1)("ne,ne,s,s"), Solution::U8(2));
+        assert_eq!(solve_1("ne,ne,s,s"), Solution::U8(2));
     }
     #[test]
     fn example1_4() {
-        assert_eq!((SOLVER.solve_1)("se,sw,se,sw,sw"), Solution::U8(3));
+        assert_eq!(solve_1("se,sw,se,sw,sw"), Solution::U8(3));
     }
 }

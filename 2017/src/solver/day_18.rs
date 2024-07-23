@@ -5,78 +5,79 @@ use std::{cell::RefCell, collections::VecDeque, rc::Rc, str::SplitWhitespace};
 pub const SOLVER: Solver = Solver {
     day: 18,
     title: "Duet",
-
-    solve_1: |input| {
-        let instructions = get_instructions(input);
-        let mut program_state = ProgramState {
-            program_counter: 0,
-            last_frequency: None,
-            registers: FxHashMap::default(),
-            is_terminating: false,
-            this_message_queue: None,
-            other_message_queue: None,
-            sent_messages: 0,
-        };
-
-        // Repeatedly execute instructions until an instruction sets the is_terminating flag (which
-        // happens then rcv is called with a non-zero value). The program counter tracks the index
-        // of the next instruction to execute.
-        while !program_state.is_terminating {
-            instructions[program_state.program_counter].execute_set_1(&mut program_state);
-        }
-
-        if let Some(last_frequency) = program_state.last_frequency {
-            Solution::I64(last_frequency)
-        } else {
-            panic!("No frequency was ever sounded")
-        }
-    },
-
-    solve_2: |input| {
-        let instructions = get_instructions(input);
-
-        // Both programs need to be able to access each others' message queues so that when they
-        // have a value to send, they can push it to the other's message queue. This requires
-        // reference counting with interior mutability.
-        let program_0_message_queue = Rc::new(RefCell::new(VecDeque::new()));
-        let program_1_message_queue = Rc::new(RefCell::new(VecDeque::new()));
-
-        let mut program_state_0 = ProgramState {
-            program_counter: 0,
-            last_frequency: None,
-            registers: FxHashMap::default(),
-            is_terminating: false,
-            this_message_queue: Some(Rc::clone(&program_0_message_queue)),
-            other_message_queue: Some(Rc::clone(&program_1_message_queue)),
-            sent_messages: 0,
-        };
-        let mut program_state_1 = ProgramState {
-            program_counter: 0,
-            last_frequency: None,
-            registers: FxHashMap::default(),
-            is_terminating: false,
-            this_message_queue: Some(program_1_message_queue),
-            other_message_queue: Some(program_0_message_queue),
-            sent_messages: 0,
-        };
-        // No need to explicitly set program 0 to have register p start with value 0 since 0 is the
-        // default value of a register.
-        program_state_1.registers.insert('p', 1);
-
-        // When a program attempts to receive and no value is available to be received, it remains
-        // on that instruction (the program counter is not incremented) and it sets the
-        // is_terminating flag to true. However, it will continue to check for a new received value
-        // every loop, and if it receives one, it will set is_terminating back to false and continue
-        // executing. If both programs set their is_terminating flag to true at a same time, then
-        // they have reached a deadlock, so the loop exits.
-        while !(program_state_0.is_terminating && program_state_1.is_terminating) {
-            instructions[program_state_0.program_counter].execute_set_2(&mut program_state_0);
-            instructions[program_state_1.program_counter].execute_set_2(&mut program_state_1);
-        }
-
-        Solution::U64(program_state_1.sent_messages)
-    },
+    part_solvers: &[solve_1, solve_2],
 };
+
+fn solve_1(input: &str) -> Solution {
+    let instructions = get_instructions(input);
+    let mut program_state = ProgramState {
+        program_counter: 0,
+        last_frequency: None,
+        registers: FxHashMap::default(),
+        is_terminating: false,
+        this_message_queue: None,
+        other_message_queue: None,
+        sent_messages: 0,
+    };
+
+    // Repeatedly execute instructions until an instruction sets the is_terminating flag (which
+    // happens then rcv is called with a non-zero value). The program counter tracks the index of
+    // the next instruction to execute.
+    while !program_state.is_terminating {
+        instructions[program_state.program_counter].execute_set_1(&mut program_state);
+    }
+
+    if let Some(last_frequency) = program_state.last_frequency {
+        Solution::I64(last_frequency)
+    } else {
+        panic!("No frequency was ever sounded")
+    }
+}
+
+fn solve_2(input: &str) -> Solution {
+    let instructions = get_instructions(input);
+
+    // Both programs need to be able to access each others' message queues so that when they have a
+    // value to send, they can push it to the other's message queue. This requires reference
+    // counting with interior mutability.
+    let program_0_message_queue = Rc::new(RefCell::new(VecDeque::new()));
+    let program_1_message_queue = Rc::new(RefCell::new(VecDeque::new()));
+
+    let mut program_state_0 = ProgramState {
+        program_counter: 0,
+        last_frequency: None,
+        registers: FxHashMap::default(),
+        is_terminating: false,
+        this_message_queue: Some(Rc::clone(&program_0_message_queue)),
+        other_message_queue: Some(Rc::clone(&program_1_message_queue)),
+        sent_messages: 0,
+    };
+    let mut program_state_1 = ProgramState {
+        program_counter: 0,
+        last_frequency: None,
+        registers: FxHashMap::default(),
+        is_terminating: false,
+        this_message_queue: Some(program_1_message_queue),
+        other_message_queue: Some(program_0_message_queue),
+        sent_messages: 0,
+    };
+    // No need to explicitly set program 0 to have register p start with value 0 since 0 is the
+    // default value of a register.
+    program_state_1.registers.insert('p', 1);
+
+    // When a program attempts to receive and no value is available to be received, it remains on
+    // that instruction (the program counter is not incremented) and it sets the is_terminating flag
+    // to true. However, it will continue to check for a new received value every loop, and if it
+    // receives one, it will set is_terminating back to false and continue executing. If both
+    // programs set their is_terminating flag to true at a same time, then they have reached a
+    // deadlock, so the loop exits.
+    while !(program_state_0.is_terminating && program_state_1.is_terminating) {
+        instructions[program_state_0.program_counter].execute_set_2(&mut program_state_0);
+        instructions[program_state_1.program_counter].execute_set_2(&mut program_state_1);
+    }
+
+    Solution::U64(program_state_1.sent_messages)
+}
 
 // Representation of data necessary to run the program.
 struct ProgramState {
@@ -340,7 +341,7 @@ mod test {
     #[test]
     fn example1_1() {
         assert_eq!(
-            (SOLVER.solve_1)(
+            solve_1(
                 "\
 set a 1
 add a 2
@@ -360,7 +361,7 @@ jgz a -2"
     #[test]
     fn example2_1() {
         assert_eq!(
-            (SOLVER.solve_2)(
+            solve_2(
                 "\
 snd 1
 snd 2

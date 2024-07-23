@@ -5,36 +5,35 @@ use std::collections::VecDeque;
 pub const SOLVER: Solver = Solver {
     day: 25,
     title: "The Halting Problem",
-
-    solve_1: |input| {
-        let blueprint = get_blueprint(input);
-        let mut tape = Tape {
-            slots: vec![false].into(),
-            position: 0,
-        };
-        let mut state_name = blueprint.first_state;
-
-        for _ in 0..blueprint.iterations {
-            let state = blueprint
-                .states
-                .get(&state_name)
-                .expect("All states should be present in hash map");
-
-            // Read the tape's value under its cursor, execute the corresponding instruction, and
-            // overwrite state_name with the return value from Instruction::execute() which is the
-            // next state's name.
-            state_name = if tape.read() {
-                state.if_1.execute(&mut tape)
-            } else {
-                state.if_0.execute(&mut tape)
-            };
-        }
-
-        Solution::U32(tape.diagnostic_checksum())
-    },
-
-    solve_2: |input| Solution::U8(0),
+    part_solvers: &[solve_1],
 };
+
+fn solve_1(input: &str) -> Solution {
+    let blueprint = get_blueprint(input);
+    let mut tape = Tape {
+        slots: vec![false].into(),
+        position: 0,
+    };
+    let mut state_name = blueprint.first_state;
+
+    for _ in 0..blueprint.iterations {
+        let state = blueprint
+            .states
+            .get(&state_name)
+            .expect("All states should be present in hash map");
+
+        // Read the tape's value under its cursor, execute the corresponding instruction, and
+        // overwrite state_name with the return value from Instruction::execute() which is the next
+        // state's name.
+        state_name = if tape.read() {
+            state.if_1.execute(&mut tape)
+        } else {
+            state.if_0.execute(&mut tape)
+        };
+    }
+
+    Solution::U32(tape.diagnostic_checksum())
+}
 
 struct Tape {
     slots: VecDeque<bool>,
@@ -212,7 +211,7 @@ mod test {
     #[test]
     fn example1_1() {
         assert_eq!(
-            (SOLVER.solve_1)(
+            solve_1(
                 "\
 Begin in state A.
 Perform a diagnostic checksum after 6 steps.

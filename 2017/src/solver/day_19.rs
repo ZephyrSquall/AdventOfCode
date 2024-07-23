@@ -3,41 +3,41 @@ use super::{Solution, Solver};
 pub const SOLVER: Solver = Solver {
     day: 19,
     title: "A Series of Tubes",
-
-    solve_1: |input| {
-        // Pushes the letter in the grid at the given position into visited_letters, unless it's a
-        // regular path character ('|', '-', or '+').
-        fn update_visited_letters(
-            grid: &[Vec<char>],
-            visited_letters: &mut Vec<char>,
-            x: usize,
-            y: usize,
-        ) {
-            let letter = grid[y][x];
-            if letter != '|' && letter != '-' && letter != '+' {
-                visited_letters.push(letter);
-            }
-        }
-
-        let mut visited_letters = Vec::new();
-        traverse_path(input, &mut update_visited_letters, &mut visited_letters);
-        // Convert array of chars into String.
-        let visited_letters = visited_letters.into_iter().collect();
-        Solution::String(visited_letters)
-    },
-
-    solve_2: |input| {
-        fn update_count(_: &[Vec<char>], count: &mut u32, _: usize, _: usize) {
-            *count += 1;
-        }
-
-        // Start count from 1 to include the step of entering the grid from outside the top of the
-        // grid.
-        let mut count = 1;
-        traverse_path(input, &mut update_count, &mut count);
-        Solution::U32(count)
-    },
+    part_solvers: &[solve_1, solve_2],
 };
+
+fn solve_1(input: &str) -> Solution {
+    // Pushes the letter in the grid at the given position into visited_letters, unless it's a
+    // regular path character ('|', '-', or '+').
+    fn update_visited_letters(
+        grid: &[Vec<char>],
+        visited_letters: &mut Vec<char>,
+        x: usize,
+        y: usize,
+    ) {
+        let letter = grid[y][x];
+        if letter != '|' && letter != '-' && letter != '+' {
+            visited_letters.push(letter);
+        }
+    }
+
+    let mut visited_letters = Vec::new();
+    traverse_path(input, &mut update_visited_letters, &mut visited_letters);
+    // Convert array of chars into String.
+    let visited_letters = visited_letters.into_iter().collect();
+    Solution::String(visited_letters)
+}
+
+fn solve_2(input: &str) -> Solution {
+    fn update_count(_: &[Vec<char>], count: &mut u32, _: usize, _: usize) {
+        *count += 1;
+    }
+
+    // Start count from 1 to include the step of entering the grid from outside the top of the grid.
+    let mut count = 1;
+    traverse_path(input, &mut update_count, &mut count);
+    Solution::U32(count)
+}
 
 // Builds the grid using the input, identifies the starting position, then traverses the path until
 // it terminates. On each step, calls the provided update function with the provided update value
@@ -141,7 +141,7 @@ mod test {
     #[test]
     fn example1_1() {
         assert_eq!(
-            (SOLVER.solve_1)(
+            solve_1(
                 // In Rust, an end-of-line backslash ignores the newline and all whitespace at the
                 // beginning of the following line. In this case, that whitespace is intended to be
                 // part of the string, so a backslash can't be used to align this string literal.
@@ -160,7 +160,7 @@ mod test {
     #[test]
     fn example2_1() {
         assert_eq!(
-            (SOLVER.solve_2)(
+            solve_2(
                 "     |          
      |  +--+    
      A  |  C    

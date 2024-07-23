@@ -4,66 +4,65 @@ use rustc_hash::FxHashMap;
 pub const SOLVER: Solver = Solver {
     day: 8,
     title: "I Heard You Like Registers",
-
-    solve_1: |input| {
-        let mut registers = FxHashMap::default();
-
-        for line in input.lines() {
-            let instruction = get_instruction(line);
-
-            let condition_register_ref =
-                registers.entry(instruction.condition_register).or_insert(0);
-            if test_condition(
-                *condition_register_ref,
-                instruction.condition_amount,
-                &instruction.condition,
-            ) {
-                let operation_register_ref =
-                    registers.entry(instruction.operation_register).or_insert(0);
-                match instruction.operation {
-                    Operation::Increase => *operation_register_ref += instruction.operation_amount,
-                    Operation::Decrease => *operation_register_ref -= instruction.operation_amount,
-                }
-            }
-        }
-
-        let largest_register_ref = registers
-            .values()
-            .max()
-            .expect("Error finding maximum value");
-        Solution::I32(*largest_register_ref)
-    },
-
-    solve_2: |input| {
-        let mut registers = FxHashMap::default();
-        let mut largest_value = i32::MIN;
-
-        for line in input.lines() {
-            let instruction = get_instruction(line);
-
-            let condition_register_ref =
-                registers.entry(instruction.condition_register).or_insert(0);
-            if test_condition(
-                *condition_register_ref,
-                instruction.condition_amount,
-                &instruction.condition,
-            ) {
-                let operation_register_ref =
-                    registers.entry(instruction.operation_register).or_insert(0);
-                match instruction.operation {
-                    Operation::Increase => *operation_register_ref += instruction.operation_amount,
-                    Operation::Decrease => *operation_register_ref -= instruction.operation_amount,
-                }
-
-                if *operation_register_ref > largest_value {
-                    largest_value = *operation_register_ref;
-                }
-            }
-        }
-
-        Solution::I32(largest_value)
-    },
+    part_solvers: &[solve_1, solve_2],
 };
+
+fn solve_1(input: &str) -> Solution {
+    let mut registers = FxHashMap::default();
+
+    for line in input.lines() {
+        let instruction = get_instruction(line);
+
+        let condition_register_ref = registers.entry(instruction.condition_register).or_insert(0);
+        if test_condition(
+            *condition_register_ref,
+            instruction.condition_amount,
+            &instruction.condition,
+        ) {
+            let operation_register_ref =
+                registers.entry(instruction.operation_register).or_insert(0);
+            match instruction.operation {
+                Operation::Increase => *operation_register_ref += instruction.operation_amount,
+                Operation::Decrease => *operation_register_ref -= instruction.operation_amount,
+            }
+        }
+    }
+
+    let largest_register_ref = registers
+        .values()
+        .max()
+        .expect("Error finding maximum value");
+    Solution::I32(*largest_register_ref)
+}
+
+fn solve_2(input: &str) -> Solution {
+    let mut registers = FxHashMap::default();
+    let mut largest_value = i32::MIN;
+
+    for line in input.lines() {
+        let instruction = get_instruction(line);
+
+        let condition_register_ref = registers.entry(instruction.condition_register).or_insert(0);
+        if test_condition(
+            *condition_register_ref,
+            instruction.condition_amount,
+            &instruction.condition,
+        ) {
+            let operation_register_ref =
+                registers.entry(instruction.operation_register).or_insert(0);
+            match instruction.operation {
+                Operation::Increase => *operation_register_ref += instruction.operation_amount,
+                Operation::Decrease => *operation_register_ref -= instruction.operation_amount,
+            }
+
+            if *operation_register_ref > largest_value {
+                largest_value = *operation_register_ref;
+            }
+        }
+    }
+
+    Solution::I32(largest_value)
+}
 
 enum Operation {
     Increase,
@@ -147,7 +146,7 @@ mod test {
     #[test]
     fn example1_1() {
         assert_eq!(
-            (SOLVER.solve_1)(
+            solve_1(
                 "\
 b inc 5 if a > 1
 a inc 1 if b < 5
@@ -161,7 +160,7 @@ c inc -20 if c == 10"
     #[test]
     fn example2_1() {
         assert_eq!(
-            (SOLVER.solve_2)(
+            solve_2(
                 "\
 b inc 5 if a > 1
 a inc 1 if b < 5

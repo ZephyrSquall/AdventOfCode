@@ -4,53 +4,53 @@ use rustc_hash::FxHashMap;
 pub const SOLVER: Solver = Solver {
     day: 13,
     title: "Packet Scanners",
-
-    solve_1: |input| {
-        let (mut firewall, greatest_depth) = get_firewall(input);
-        let mut total_severity = 0;
-
-        for depth in 0..=greatest_depth {
-            if advance_picosecond(&mut firewall).contains(&depth) {
-                total_severity += u32::from(depth) * u32::from(firewall[&depth].range);
-            }
-        }
-
-        Solution::U32(total_severity)
-    },
-
-    solve_2: |input| {
-        struct Packet {
-            delay: u32,
-            depth: u8,
-        }
-
-        let (mut firewall, greatest_depth) = get_firewall(input);
-        let mut packets = Vec::new();
-        let mut delay: u32 = 0;
-
-        // Send a packet into a firewall every picosecond and track all uncaught packets. When a
-        // packet is caught, remove it. The first packet to reach the end will have the smallest
-        // delay.
-        loop {
-            packets.push(Packet { delay, depth: 0 });
-
-            let caught_depths = advance_picosecond(&mut firewall);
-
-            // Remove caught packets.
-            packets.retain(|packet| !caught_depths.contains(&packet.depth));
-
-            for packet in &mut packets {
-                if packet.depth == greatest_depth {
-                    return Solution::U32(packet.delay);
-                }
-
-                packet.depth += 1;
-            }
-
-            delay += 1;
-        }
-    },
+    part_solvers: &[solve_1, solve_2],
 };
+
+fn solve_1(input: &str) -> Solution {
+    let (mut firewall, greatest_depth) = get_firewall(input);
+    let mut total_severity = 0;
+
+    for depth in 0..=greatest_depth {
+        if advance_picosecond(&mut firewall).contains(&depth) {
+            total_severity += u32::from(depth) * u32::from(firewall[&depth].range);
+        }
+    }
+
+    Solution::U32(total_severity)
+}
+
+fn solve_2(input: &str) -> Solution {
+    struct Packet {
+        delay: u32,
+        depth: u8,
+    }
+
+    let (mut firewall, greatest_depth) = get_firewall(input);
+    let mut packets = Vec::new();
+    let mut delay: u32 = 0;
+
+    // Send a packet into a firewall every picosecond and track all uncaught packets. When a packet
+    // is caught, remove it. The first packet to reach the end will have the smallest delay.
+    loop {
+        packets.push(Packet { delay, depth: 0 });
+
+        let caught_depths = advance_picosecond(&mut firewall);
+
+        // Remove caught packets.
+        packets.retain(|packet| !caught_depths.contains(&packet.depth));
+
+        for packet in &mut packets {
+            if packet.depth == greatest_depth {
+                return Solution::U32(packet.delay);
+            }
+
+            packet.depth += 1;
+        }
+
+        delay += 1;
+    }
+}
 
 struct Layer {
     range: u8,
@@ -128,7 +128,7 @@ mod test {
     #[test]
     fn example1_1() {
         assert_eq!(
-            (SOLVER.solve_1)(
+            solve_1(
                 "\
 0: 3
 1: 2
@@ -142,7 +142,7 @@ mod test {
     #[test]
     fn example2_1() {
         assert_eq!(
-            (SOLVER.solve_2)(
+            solve_2(
                 "\
 0: 3
 1: 2
